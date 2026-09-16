@@ -1,0 +1,441 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    color: #102e49;
+    background: #f6f9fc;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.site-header {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px 0;
+    color: #fff;
+}
+
+.nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo span,
+.intro-section h2 span,
+.catalogue-section h2 span,
+.about-section h2 span,
+.laboratory-section h2 span,
+.groups-section h2 span,
+.cta-section h2 span {
+    color: #65ded5;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.main-nav a {
+    color: #c2d6dd;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.main-nav a:hover {
+    color: #65ded5;
+}
+
+.hero-section {
+    min-height: 720px;
+    padding: 170px 0 100px;
+    color: #fff;
+    background:
+        linear-gradient(90deg, rgba(7, 27, 46, .98), rgba(7, 27, 46, .65)),
+        url("../images/chemlab-hero.jpg") center / cover no-repeat;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: center;
+}
+
+.eyebrow {
+    color: #65ded5;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.hero-copy h1 {
+    margin: 25px 0;
+    font-size: clamp(48px, 6vw, 82px);
+    line-height: .95;
+}
+
+.hero-copy h1 span {
+    color: #65ded5;
+}
+
+.hero-description {
+    max-width: 460px;
+    color: #abc2ca;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 35px;
+}
+
+.button {
+    display: inline-block;
+    padding: 15px 22px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.button-primary {
+    color: #08283c;
+    background: #65ded5;
+}
+
+.button-secondary {
+    color: #fff;
+    border-color: #6d929f;
+    background: transparent;
+}
+
+.button-primary:hover,
+.button-secondary:hover {
+    color: #08283c;
+    background: #65ded5;
+}
+
+.hero-visual {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 14px;
+}
+
+.hero-visual img {
+    display: block;
+    width: 100%;
+    min-height: 440px;
+    object-fit: cover;
+}
+
+.visual-label {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 14px;
+    color: #bce5e4;
+    border: 1px solid rgba(196, 244, 243, .3);
+    border-radius: 6px;
+    background: rgba(9, 37, 53, .8);
+    font-size: 11px;
+}
+
+.visual-label span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: #52e8bf;
+}
+
+.intro-section,
+.about-section,
+.groups-section {
+    padding: 110px 0;
+    background: #f6f9fc;
+}
+
+.intro-section h2,
+.catalogue-section h2,
+.about-section h2,
+.laboratory-section h2,
+.groups-section h2,
+.cta-section h2 {
+    margin: 20px 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 52px;
+    line-height: 1.05;
+}
+
+.intro-section p:last-child,
+.laboratory-section p:not(.eyebrow),
+.groups-section p:not(.eyebrow),
+.cta-section p:not(.eyebrow) {
+    max-width: 600px;
+    color: #718792;
+    line-height: 1.8;
+}
+
+.catalogue-section {
+    padding: 110px 0;
+    background: #fff;
+}
+
+.catalogue-description {
+    max-width: 550px;
+    color: #718792;
+    line-height: 1.8;
+}
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-top: 45px;
+}
+
+.experiment-card {
+    overflow: hidden;
+    border: 1px solid #e2edef;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 15px 35px rgba(16, 46, 73, .08);
+}
+
+.experiment-card-image {
+    height: 230px;
+    overflow: hidden;
+}
+
+.experiment-card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.experiment-card-content {
+    padding: 25px;
+}
+
+.experiment-level {
+    color: #1ca8a5;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.experiment-card h3 {
+    margin: 15px 0 10px;
+    color: #102e49;
+    font-size: 23px;
+}
+
+.experiment-card p {
+    color: #718792;
+    line-height: 1.7;
+}
+
+.experiment-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #15999d;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 45px;
+}
+
+.step-card {
+    padding: 25px;
+    border: 1px solid #e2edef;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.step-card > span {
+    color: #25bdbb;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.step-card h3 {
+    margin: 25px 0 10px;
+    color: #102e49;
+    font-size: 20px;
+}
+
+.step-card p {
+    margin: 0;
+    color: #718792;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.laboratory-section {
+    padding: 110px 0;
+    color: #fff;
+    background:
+        linear-gradient(90deg, rgba(7, 27, 46, .96), rgba(7, 27, 46, .82)),
+        url("../images/chemlab-hero.jpg") center / cover no-repeat;
+}
+
+.laboratory-section p:not(.eyebrow),
+.groups-section p:not(.eyebrow) {
+    color: #bdd3d7;
+}
+
+.cta-section {
+    padding: 110px 0;
+    color: #fff;
+    background: #071b2e;
+    text-align: center;
+}
+
+.cta-section p:not(.eyebrow) {
+    margin-right: auto;
+    margin-left: auto;
+    color: #bdd3d7;
+}
+
+.site-footer {
+    padding: 40px 0;
+    color: #9db9c0;
+    background: #071b2e;
+}
+
+.site-footer h3 {
+    color: #fff;
+}
+
+.site-footer h3 span {
+    color: #65ded5;
+}
+
+.site-footer p {
+    margin: 10px 0;
+}
+
+@media (max-width: 750px) {
+    .main-nav {
+        display: none;
+    }
+
+    .hero-section {
+        padding-top: 130px;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .hero-copy h1 {
+        font-size: 52px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .button {
+        text-align: center;
+    }
+
+    .hero-visual img {
+        min-height: 300px;
+    }
+
+    .intro-section h2,
+    .catalogue-section h2,
+    .about-section h2,
+    .laboratory-section h2,
+    .groups-section h2,
+    .cta-section h2 {
+        font-size: 40px;
+    }
+
+    .catalogue-grid,
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Bouton d'inscription dans la navigation et le Hero */
+.nav-signup {
+    padding: 10px 15px;
+    color: #08283c !important;
+    border-radius: 7px;
+    background: #65ded5;
+    font-weight: bold;
+}
+
+.nav-signup:hover {
+    color: #08283c !important;
+    background: #ffffff;
+}
+
+.button-outline-accent {
+    color: #65ded5;
+    border-color: #65ded5;
+    background: transparent;
+}
+
+.button-outline-accent:hover {
+    color: #08283c;
+    border-color: #65ded5;
+    background: #65ded5;
+}
+
+.button-catalogue {
+    color: #ffffff;
+    border: 1px solid rgba(101, 222, 213, 0.85);
+    background: rgba(7, 27, 46, 0.48);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.button-catalogue:hover {
+    color: #08283c;
+    border-color: #65ded5;
+    background: #65ded5;
+    box-shadow: 0 10px 24px rgba(101, 222, 213, 0.28);
+}
+

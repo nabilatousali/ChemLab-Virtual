@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Catalogue — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'css/catalogue.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<header class="catalogue-header">
+    <div class="container nav-inner">
+        <a href="{% url 'laboratory:home' %}" class="logo">
+            ChemLab <span>Virtual</span>
+        </a>
+    </div>
+</header>
+
+<main class="catalogue-page">
+
+    <section class="catalogue-hero">
+        <div class="container">
+            <p class="eyebrow">ChemLab Virtual</p>
+
+            <h1>
+                Le catalogue des  
+
+                <span>expériences.</span>
+            </h1>
+
+            <p>
+                Choisissez une expérience et explorez la chimie
+                à votre rythme.
+            </p>
+        </div>
+    </section>
+
+    <section class="catalogue-section">
+        <div class="container">
+
+            <div class="experiment-grid">
+                {% for experiment in experiments %}
+                    <article class="experiment-card">
+
+                        {% if experiment.image %}
+                            <img src="{{ experiment.image.url }}"
+                                 alt="{{ experiment.title }}">
+                        {% else %}
+                            <img src="{% static 'images/chemlab-experiments.jpg' %}"
+                                 alt="{{ experiment.title }}">
+                        {% endif %}
+
+                        <div class="experiment-body">
+                            <div class="experiment-meta">
+                                <span>
+                                    {{ experiment.get_level_display }}
+                                </span>
+
+                                <span>
+                                    {{ experiment.duration }} min
+                                </span>
+                            </div>
+
+                            <h2>{{ experiment.title }}</h2>
+
+                            <p>
+                                {{ experiment.short_description }}
+                            </p>
+
+                            <a href="{{ experiment.get_absolute_url }}"
+                               class="card-link">
+                                Découvrir →
+                            </a>
+                        </div>
+
+                    </article>
+                {% empty %}
+                    <p>Aucune expérience disponible.</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

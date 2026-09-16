@@ -1,0 +1,382 @@
+/* ---------- Palette (reprise du projet) ---------- */
+:root {
+    --lab-blue: #2563EB;
+    --lab-blue-dark: #1E3A8A;
+    --lab-blue-light: #DBEAFE;
+    --lab-white: #FFFFFF;
+    --lab-grey: #F8FAFC;
+}
+
+/* ---------- Titre + statut ---------- */
+.workspace-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 12px 0 24px;
+    flex-wrap: wrap;
+}
+
+.workspace-title-row h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--lab-blue-dark);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lab-blue-light);
+    color: var(--lab-blue-dark);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    display: inline-block;
+}
+
+/* ---------- Grille principale ---------- */
+.workspace-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr 300px;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .workspace-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Panneau matériel / réactifs (menus déroulants) ---------- */
+.workspace-panel {
+    background: var(--lab-white);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.dropdown-group {
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.dropdown-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--lab-grey);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-weight: 600;
+    color: var(--lab-blue-dark);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.dropdown-toggle:hover {
+    background: var(--lab-blue-light);
+}
+
+.chevron {
+    transition: transform 0.15s ease;
+}
+
+.dropdown-toggle.open .chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.dropdown-menu.open {
+    display: flex;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--lab-white);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-align: left;
+    transition: border-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+    border-color: var(--lab-blue);
+}
+
+.dropdown-item img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.dropdown-item-fallback {
+    font-size: 1.1rem;
+}
+
+.reagent-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.dropdown-empty {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    padding: 6px 4px;
+}
+
+.workspace-hint {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
+/* ---------- Paillasse ---------- */
+.workbench {
+    background: var(--lab-white);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.workbench-surface {
+    flex: 1;
+    background: var(--lab-grey);
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 14px;
+    padding: 20px;
+    min-height: 360px;
+    position: relative;
+}
+
+.workbench-placeholder {
+    margin: auto;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.bench-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--lab-blue-dark);
+    background: var(--lab-white);
+    border-radius: 10px;
+    padding: 10px;
+    width: 84px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    animation: bench-pop 0.15s ease;
+}
+
+@keyframes bench-pop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.bench-item-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    background: var(--lab-blue-light);
+}
+
+.workbench-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.workbench-controls button {
+    background: var(--lab-blue-dark);
+    color: var(--lab-white);
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* ---------- Protocole ---------- */
+.protocol-panel {
+    background: var(--lab-white);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.protocol-panel h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: var(--lab-blue-dark);
+}
+
+.protocol-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.protocol-steps li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.step-number {
+    background: var(--lab-blue);
+    color: var(--lab-white);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.protocol-steps h3 {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    color: var(--lab-blue-dark);
+}
+
+.protocol-steps p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.progress-block {
+    margin-bottom: 16px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.progress-bar {
+    background: var(--lab-grey);
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--lab-blue);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+.start-button {
+    width: 100%;
+    background: #10b981;
+    color: var(--lab-white);
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.start-button:hover {
+    background: #0ea371;
+}
+
+.start-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ---------- Barre de résultats ---------- */
+.results-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    background: var(--lab-white);
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 140px;
+}
+
+.result-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--lab-blue-light);
+    color: var(--lab-blue-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.result-item p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.result-item strong {
+    font-size: 1.3rem;
+    color: var(--lab-blue-dark);
+}

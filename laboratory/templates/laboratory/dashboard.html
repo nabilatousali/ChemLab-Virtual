@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Laboratoire — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/laboratory.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">
+                    ChemLab Virtual / Laboratoire
+                </p>
+
+                <h1>
+                    Mes expériences
+                </h1>
+
+                <p class="lab-header-description">
+                    Choisissez une expérience et commencez votre exploration.
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>
+                    Bonjour,
+                    <strong>
+                        {% if user.is_authenticated %}
+                            {{ user.first_name|default:user.username }}
+                        {% else %}
+                            Visiteur
+                        {% endif %}
+                    </strong>
+                </span>
+
+                <div class="lab-avatar">
+                    {% if user.is_authenticated %}
+                        {{ user.username|first|upper }}
+                    {% else %}
+                        V
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <section class="experiment-catalogue">
+
+            {% for experiment in experiments %}
+                <article class="experiment-card">
+
+                    <div class="experiment-card-top">
+                        <span class="experiment-status">
+                            Disponible
+                        </span>
+
+                        <span class="experiment-duration">
+                            {{ experiment.duration }}
+                        </span>
+                    </div>
+
+                    <div class="experiment-card-icon">
+                        ⚗
+                    </div>
+
+                    <h2>
+                        {{ experiment.title }}
+                    </h2>
+
+                    <p>
+                        {{ experiment.description }}
+                    </p>
+
+                    <div class="experiment-card-footer">
+                        <span>
+                            Niveau {{ experiment.level }}
+                        </span>
+
+                        <a
+                            href="{% url 'laboratory:workspace' experiment.slug %}"
+                            class="experiment-link"
+                        >
+                            Commencer
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+
+                </article>
+            {% empty %}
+                <p>
+                    Aucune expérience disponible pour le moment.
+                </p>
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}

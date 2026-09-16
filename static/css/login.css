@@ -1,0 +1,42 @@
+/* =========================================================
+   ChemLab Virtual — page de connexion
+   Fichier : static/css/login.css
+   Charge auth-common.css avant ce fichier.
+========================================================= */
+
+.login-page .auth-form-wrapper {
+    max-width: 540px;
+}
+
+.login-page .auth-intro {
+    margin-bottom: 32px;
+}
+
+.login-page .auth-form {
+    gap: 19px;
+}
+
+.login-page .forgot-password {
+    white-space: nowrap;
+}
+
+.login-page .checkbox-field {
+    margin-top: -1px;
+}
+
+@media (max-width: 540px) {
+    .login-page .field-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+}
+
+/* Placeholders attendus par le backend de connexion */
+.login-page input[name="email"]::placeholder {
+    color: #a8b8bd;
+}
+
+.login-page input[name="password"]::placeholder {
+    color: #a8b8bd;
+}

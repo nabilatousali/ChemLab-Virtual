@@ -1,0 +1,210 @@
+/* Reset général */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    color: #102e49;
+    background: #f6f9fc;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Conteneur commun */
+
+.container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+/* Logo */
+
+.logo {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #65ded5;
+}
+
+/* Boutons communs */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+}
+
+.button-primary {
+    color: #08283c;
+    background: #65ded5;
+}
+
+.button-primary:hover {
+    background: #8af0e6;
+    transform: translateY(-3px);
+}
+
+.button-secondary {
+    color: white;
+    border: 1px solid rgba(173, 225, 230, 0.4);
+    background: transparent;
+}
+
+.button-secondary:hover {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+/* Texte commun */
+
+.eyebrow {
+    margin: 0 0 22px;
+    color: #65ded5;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Header commun */
+
+.site-header,
+.catalogue-header {
+    position: relative;
+    z-index: 10;
+    padding: 25px 0;
+    color: white;
+    background: #071b2e;
+}
+
+.nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main-nav {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+}
+
+.main-nav a {
+    color: #c2d6dd;
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.main-nav a:hover {
+    color: #65ded5;
+}
+
+.login-button {
+    padding: 12px 18px;
+    color: white;
+    border: 1px solid rgba(160, 220, 225, 0.4);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Footer */
+
+.site-footer {
+    padding: 55px 0;
+    color: #9db9c0;
+    background: #071b2e;
+}
+
+/* Responsive partagé */
+
+@media (max-width: 700px) {
+    .container {
+        width: min(100% - 32px, 550px);
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .login-button {
+        display: none;
+    }
+}
+.site-messages {
+    position: fixed;
+    z-index: 100;
+    top: 20px;
+    right: 20px;
+    width: min(360px, calc(100% - 40px));
+}
+
+.site-message {
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(16, 46, 73, 0.15);
+    color: #24455b;
+    font-size: 13px;
+}
+
+.site-message.success {
+    border-left: 4px solid #25bdbb;
+}
+
+.site-messages {
+    position: fixed;
+    z-index: 1000;
+    top: 20px;
+    right: 20px;
+    width: min(360px, calc(100% - 40px));
+}
+
+.site-message {
+    padding: 14px 16px;
+    color: #24455b;
+    border: 1px solid #d5e3e7;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(16, 46, 73, 0.15);
+    font-size: 13px;
+}
+
+.site-message.success {
+    border-left: 4px solid #25bdbb;
+}
+
+.site-message.error {
+    color: #9b2c2c;
+    border-left: 4px solid #d9534f;
+    background: #fff4f4;
+}
+

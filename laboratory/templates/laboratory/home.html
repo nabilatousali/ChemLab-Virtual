@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChemLab Virtual — Expérimentez. Découvrez. Comprenez.</title>
+    <meta name="description" content="ChemLab Virtual, un laboratoire de chimie virtuel interactif.">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+<div class="site-shell">
+
+    <header class="site-header">
+        <div class="container nav-inner">
+            <a href="{% url 'laboratory:home' %}" class="logo">
+                ChemLab <span>Virtual</span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="{% url 'laboratory:home' %}">Accueil</a>
+                <a href="#catalogue">Catalogue</a>
+                <a href="#method">Expériences</a>
+                <a href="#groups">Groupes</a>
+                <a href="#about">À propos</a>
+                {% if user.is_authenticated %}
+                    <a href="#laboratoire">Mon espace</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Se connecter</a>
+                    <a href="{% url 'accounts:register' %}" class="nav-signup">S'inscrire</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+
+<section class="hero-section">
+
+    <div class="container hero-grid">
+
+        <div class="hero-copy">
+
+            <p class="eyebrow">
+                Laboratoire virtuel interactif
+            </p>
+
+            <h1>
+                Expérimentez.
+                <span>Découvrez.</span>
+                Comprenez.
+            </h1>
+
+            <p class="hero-description">
+                La chimie devient une expérience. Explorez, manipulez
+                et apprenez dans un laboratoire numérique conçu pour
+                éveiller votre curiosité.
+            </p>
+
+            <div class="hero-actions">
+
+                {% if user.is_authenticated %}
+
+                    <a
+                        href="{% url 'laboratory:dashboard' %}"
+                        class="button button-primary"
+                    >
+                        Accéder au laboratoire
+                    </a>
+
+                    <a
+                        href="#catalogue"
+                        class="button button-catalogue"
+                    >
+                        Voir le catalogue
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'accounts:login' %}"
+                        class="button button-primary"
+                    >
+                        Se connecter
+                    </a>
+
+                    <a
+                        href="{% url 'accounts:register' %}"
+                        class="button button-secondary"
+                    >
+                        S'inscrire
+                    </a>
+
+                    <a
+                        href="#catalogue"
+                        class="button button-catalogue"
+                    >
+                        Voir le catalogue
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="hero-visual">
+
+            <div class="visual-label">
+                <span></span>
+                Simulation active
+            </div>
+
+            <img
+                src="{% static 'images/chemlab-hero.jpg' %}"
+                alt="Laboratoire de chimie virtuel"
+               
+            >
+
+        </div>
+
+    </div>
+
+</section>
+
+
+        <section class="intro-section" id="about">
+            <div class="container">
+                <p class="eyebrow">Pourquoi ChemLab Virtual</p>
+                <h2>
+                    Une nouvelle façon<br>
+                    <span>d'apprendre la chimie.</span>
+                </h2>
+                <p>
+                    Explorez un laboratoire de chimie virtuel interactif
+                    conçu pour vous permettre de découvrir et de réaliser
+                    des expériences scientifiques dans un environnement
+                    numérique sécurisé, intuitif et accessible.
+                </p>
+            </div>
+        </section>
+
+        <section class="catalogue-section" id="catalogue">
+            <div class="container">
+                <p class="eyebrow">Le catalogue</p>
+                <h2>
+                    Commencez par<br>
+                    <span>une expérience.</span>
+                </h2>
+                <p class="catalogue-description">
+                    Découvrez nos expériences de chimie virtuelles
+                    et progressez à votre rythme.
+                </p>
+
+                <div class="catalogue-grid">
+                    <article class="experiment-card">
+                        <div class="experiment-card-image">
+                            <img src="{% static 'images/chemlab-experiments.jpg' %}" alt="Réaction acide-base">
+                        </div>
+                        <div class="experiment-card-content">
+                            <div class="experiment-level">Facile · 10 min</div>
+                            <h3>Réaction acide-base</h3>
+                            <p>Suivez une neutralisation et observez l’évolution du pH.</p>
+                            <a href="#laboratoire" class="experiment-link">Découvrir →</a>
+                        </div>
+                    </article>
+
+                    <article class="experiment-card">
+                        <div class="experiment-card-image">
+                            <img src="{% static 'images/chemlab-experiments.jpg' %}" alt="Préparation d'une solution">
+                        </div>
+                        <div class="experiment-card-content">
+                            <div class="experiment-level">Intermédiaire · 15 min</div>
+                            <h3>Préparer une solution</h3>
+                            <p>Apprenez à préparer une solution avec précision.</p>
+                            <a href="#laboratoire" class="experiment-link">Découvrir →</a>
+                        </div>
+                    </article>
+
+                    <article class="experiment-card">
+                        <div class="experiment-card-image">
+                            <img src="{% static 'images/chemlab-experiments.jpg' %}" alt="Réaction de précipitation">
+                        </div>
+                        <div class="experiment-card-content">
+                            <div class="experiment-level">Intermédiaire · 12 min</div>
+                            <h3>Réaction de précipitation</h3>
+                            <p>Mélangez deux solutions et observez la formation d’un précipité.</p>
+                            <a href="#laboratoire" class="experiment-link">Découvrir →</a>
+                        </div>
+                    </article>
+
+                    <article class="experiment-card">
+                        <div class="experiment-card-image">
+                            <img src="{% static 'images/chemlab-experiments.jpg' %}" alt="Réaction d'oxydoréduction">
+                        </div>
+                        <div class="experiment-card-content">
+                            <div class="experiment-level">Avancé · 20 min</div>
+                            <h3>Oxydoréduction</h3>
+                            <p>Observez les échanges d’électrons dans une réaction chimique.</p>
+                            <a href="#laboratoire" class="experiment-link">Découvrir →</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section" id="method">
+            <div class="container">
+                <p class="eyebrow">Comment ça fonctionne ?</p>
+                <h2>
+                    Expérimentez comme<br>
+                    <span>dans un vrai laboratoire.</span>
+                </h2>
+
+                <div class="steps-grid">
+                    <article class="step-card"><span>01</span><h3>Choisissez</h3><p>Sélectionnez une expérience adaptée à votre niveau.</p></article>
+                    <article class="step-card"><span>02</span><h3>Manipulez</h3><p>Utilisez les instruments et les réactifs virtuels.</p></article>
+                    <article class="step-card"><span>03</span><h3>Observez</h3><p>Analysez les réactions et les changements visibles.</p></article>
+                    <article class="step-card"><span>04</span><h3>Partagez</h3><p>Sauvegardez vos résultats et partagez-les avec votre groupe.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="laboratory-section" id="laboratoire">
+            <div class="container">
+                <p class="eyebrow">Le laboratoire virtuel</p>
+                <h2>Votre curiosité comme <span>boussole.</span></h2>
+                <p>
+                    Manipulez les instruments, ajoutez des réactifs,
+                    observez les transformations et obtenez vos résultats
+                    dans un environnement sécurisé.
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'laboratory:dashboard' %}" class="button button-primary">Explorer le laboratoire</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="button button-primary">Se connecter pour commencer</a>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="groups-section" id="groups">
+            <div class="container">
+                <p class="eyebrow">Travail collaboratif</p>
+                <h2>Apprenez <span>ensemble.</span></h2>
+                <p>
+                    Créez des groupes de travail, partagez vos expériences
+                    et échangez vos résultats avec les autres utilisateurs.
+                </p>
+                <a href="#about" class="button button-primary">Créer un groupe</a>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <p class="eyebrow">Votre prochaine découverte vous attend</p>
+                <h2>Prêt à entrer <span>dans le laboratoire ?</span></h2>
+                <p>Commencez votre première expérience de chimie virtuelle dès maintenant.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'laboratory:dashboard' %}" class="button button-primary">Commencer maintenant</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="button button-primary">Se connecter</a>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <h3>ChemLab <span>Virtual</span></h3>
+            <p>Le laboratoire de chimie interactif pour apprendre, expérimenter et partager.</p>
+            <p>© 2026 ChemLab Virtual — Science · Innovation · Expérimentation</p>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

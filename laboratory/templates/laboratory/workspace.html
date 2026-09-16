@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ experiment.title }} — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/workspace.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">
+                    <a href="{% url 'laboratory:dashboard' %}">Laboratoire</a> / {{ experiment.title }}
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>
+                    Bonjour,
+                    <strong>
+                        {% if user.is_authenticated %}
+                            {{ user.first_name|default:user.username }}
+                        {% else %}
+                            Visiteur
+                        {% endif %}
+                    </strong>
+                </span>
+                <div class="lab-avatar">
+                    {% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}V{% endif %}
+                </div>
+            </div>
+        </header>
+
+        <div class="workspace-title-row">
+            <h1>{{ experiment.title }}</h1>
+            <span class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                Prêt à commencer
+            </span>
+        </div>
+
+        <div class="workspace-grid">
+
+            <aside class="workspace-panel">
+
+                <div class="dropdown-group">
+                    <button class="dropdown-toggle" data-target="materialMenu" type="button">
+                        🧪 Matériel <span class="chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="materialMenu">
+                        {% for em in materials %}
+                            <button class="dropdown-item" type="button"
+                                    data-type="material"
+                                    data-name="{{ em.material.name }}"
+                                    data-icon="{% if em.material.icon %}{{ em.material.icon.url }}{% endif %}">
+                                {% if em.material.icon %}
+                                    <img src="{{ em.material.icon.url }}" alt="">
+                                {% else %}
+                                    <span class="dropdown-item-fallback">🧫</span>
+                                {% endif %}
+                                {{ em.material.name }}
+                            </button>
+                        {% empty %}
+                            <p class="dropdown-empty">Aucun matériel défini pour cette expérience.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="dropdown-group">
+                    <button class="dropdown-toggle" data-target="reagentMenu" type="button">
+                        🧫 Réactifs <span class="chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="reagentMenu">
+                        {% for er in reagents %}
+                            <button class="dropdown-item" type="button"
+                                    data-type="reagent"
+                                    data-name="{{ er.reagent.name }}"
+                                    data-color="{{ er.reagent.color|default:'#3498db' }}">
+                                <span class="reagent-swatch" style="background:{{ er.reagent.color|default:'#3498db' }}"></span>
+                                {{ er.reagent.name }}
+                            </button>
+                        {% empty %}
+                            <p class="dropdown-empty">Aucun réactif défini pour cette expérience.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <p class="workspace-hint">
+                    Choisissez un élément dans les menus ci-dessus pour l'ajouter à la paillasse.
+                </p>
+            </aside>
+
+            <div class="workbench">
+                <div class="workbench-surface" id="workbenchSurface">
+                    <p class="workbench-placeholder" id="workbenchPlaceholder">
+                        La paillasse est vide — ajoutez du matériel pour commencer.
+                    </p>
+                </div>
+                <div class="workbench-controls">
+                    <button type="button" id="resetBench" title="Réinitialiser la paillasse">↺</button>
+                </div>
+            </div>
+
+            <aside class="protocol-panel">
+                <h2>📖 Protocole</h2>
+
+                <ol class="protocol-steps">
+                    {% for step in steps %}
+                        <li>
+                            <span class="step-number">{{ step.number|stringformat:"02d" }}</span>
+                            <div>
+                                <h3>{{ step.title }}</h3>
+                                <p>{{ step.description }}</p>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <p class="dropdown-empty">Aucune étape définie pour cette expérience.</p>
+                    {% endfor %}
+                </ol>
+
+                <div class="progress-block">
+                    <div class="progress-label">
+                        <span>Progression</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <button type="button" class="start-button" id="startExperiment">
+                    ▶ Démarrer l'expérience
+                </button>
+            </aside>
+
+        </div>
+
+        <section class="results-bar">
+            {% for ei in indicators %}
+                <div class="result-item">
+                    <div class="result-icon">{{ ei.indicator.name|slice:":2" }}</div>
+                    <div>
+                        <p>{{ ei.indicator.name }}</p>
+                        <strong data-indicator-result data-default="—{{ ei.indicator.unit }}">
+                            —{{ ei.indicator.unit }}
+                        </strong>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="dropdown-empty">Aucun indicateur défini pour cette expérience.</p>
+            {% endfor %}
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/workspace.js' %}"></script>
+{% endblock %}

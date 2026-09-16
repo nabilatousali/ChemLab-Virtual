@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Créer un compte — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/auth-common.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/register.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+
+<main class="auth-page register-page">
+
+    <!-- Panneau gauche -->
+    <section class="auth-visual">
+
+        <a
+            href="{% url 'laboratory:home' %}"
+            class="auth-logo"
+        >
+            ChemLab <span>Virtual</span>
+        </a>
+
+        <div class="auth-visual-content">
+
+            <p class="auth-eyebrow">
+                Rejoindre ChemLab Virtual
+            </p>
+
+            <div class="auth-divider"></div>
+
+            <h1>
+                Commencez votre  
+
+                <span>exploration scientifique.</span>
+            </h1>
+
+            <p>
+                Accédez à des laboratoires virtuels interactifs,
+                à des ressources de qualité et à des expériences
+                immersives pour approfondir vos connaissances en chimie.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Panneau droit -->
+    <section class="auth-panel">
+
+        <div class="auth-form-wrapper">
+
+            <!-- Logo visible sur mobile -->
+            <a
+                href="{% url 'laboratory:home' %}"
+                class="mobile-auth-logo"
+            >
+                ChemLab <span>Virtual</span>
+            </a>
+
+            <p class="auth-kicker">
+                Rejoindre ChemLab Virtual
+            </p>
+
+            <h2>
+                Créez votre  
+
+                <span>compte scientifique.</span>
+            </h2>
+
+            <p class="auth-intro">
+                Enregistrez vos résultats, réalisez des expériences
+                et collaborez avec vos groupes.
+            </p>
+
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+    <form
+    method="post"
+    action="{% url 'accounts:register' %}"
+    class="auth-form"
+    novalidate
+>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="form-errors">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <div class="form-row">
+
+        <div class="form-field">
+            <label for="{{ form.first_name.id_for_label }}">
+                Prénom
+            </label>
+
+            {{ form.first_name }}
+
+            {% for error in form.first_name.errors %}
+                <small class="field-error">
+                    {{ error }}
+                </small>
+            {% endfor %}
+        </div>
+
+        <div class="form-field">
+            <label for="{{ form.last_name.id_for_label }}">
+                Nom
+            </label>
+
+            {{ form.last_name }}
+
+            {% for error in form.last_name.errors %}
+                <small class="field-error">
+                    {{ error }}
+                </small>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+    <div class="form-field">
+        <label for="{{ form.username.id_for_label }}">
+            Nom d'utilisateur
+        </label>
+
+        {{ form.username }}
+
+        {% for error in form.username.errors %}
+            <small class="field-error">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+
+    <div class="form-field">
+        <label for="{{ form.email.id_for_label }}">
+            Adresse e-mail
+        </label>
+
+        {{ form.email }}
+
+        {% for error in form.email.errors %}
+            <small class="field-error">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+
+    <div class="form-field">
+        <label for="{{ form.password.id_for_label }}">
+            Mot de passe
+        </label>
+
+        <div class="password-field">
+            {{ form.password }}
+
+           
+        </div>
+
+        {% for error in form.password.errors %}
+            <small class="field-error">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+
+    <div class="form-field">
+        <label for="{{ form.password_confirmation.id_for_label }}">
+            Confirmer le mot de passe
+        </label>
+
+        <div class="password-field">
+            {{ form.password_confirmation }}
+
+            
+        </div>
+
+        {% for error in form.password_confirmation.errors %}
+            <small class="field-error">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+
+    <label class="checkbox-field">
+        <input
+            type="checkbox"
+            name="accept_terms"
+            required
+        >
+
+        <span>
+            J’accepte les conditions d’utilisation.
+        </span>
+    </label>
+
+
+    <button
+        type="submit"
+        class="auth-submit"
+    >
+        Créer mon compte
+    </button>
+
+</form>
+
+
+
+            <p class="auth-switch">
+                Vous avez déjà un compte ?
+
+                <a href="{% url 'accounts:login' %}">
+                    Se connecter
+                </a>
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
+

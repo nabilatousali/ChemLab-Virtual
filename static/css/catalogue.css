@@ -1,0 +1,122 @@
+.catalogue-page {
+    background: #edf5f7;
+}
+
+.catalogue-hero {
+    padding: 95px 0 85px;
+    color: white;
+    background:
+        linear-gradient(
+            100deg,
+            rgba(7, 27, 46, 0.98),
+            rgba(7, 27, 46, 0.78)
+        ),
+        url("../images/chemlab-hero.jpg") center / cover;
+}
+
+.catalogue-hero h1 {
+    margin: 20px 0;
+    font-size: clamp(48px, 6vw, 78px);
+    line-height: 0.95;
+    letter-spacing: -3px;
+}
+
+.catalogue-hero h1 span {
+    color: #65ded5;
+}
+
+.catalogue-hero p:last-child {
+    max-width: 520px;
+    color: #abc2ca;
+    line-height: 1.7;
+}
+
+.catalogue-section {
+    padding: 110px 0;
+    background: #edf5f7;
+}
+
+.experiment-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.experiment-card {
+    overflow: hidden;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 10px 28px rgba(16, 46, 73, 0.08);
+    transition: all 0.25s ease;
+}
+
+.experiment-card:hover {
+    box-shadow: 0 18px 38px rgba(16, 46, 73, 0.15);
+    transform: translateY(-6px);
+}
+
+.experiment-card > img {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.experiment-body {
+    padding: 20px;
+}
+
+.experiment-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #168f96;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.experiment-body h2 {
+    margin: 20px 0 10px;
+    color: #102e49;
+    font-size: 20px;
+}
+
+.experiment-body p {
+    min-height: 55px;
+    color: #6f8490;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.card-link {
+    color: #15999d;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.empty-state {
+    width: 100%;
+    padding: 50px;
+    border-radius: 10px;
+    background: white;
+    text-align: center;
+}
+
+/* Responsive catalogue */
+
+@media (max-width: 1000px) {
+    .experiment-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .experiment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .catalogue-hero h1 {
+        font-size: 50px;
+    }
+}

@@ -1,0 +1,54 @@
+/* =========================================================
+   ChemLab Virtual — page d’inscription
+   Fichier : static/css/register.css
+   Charge auth-common.css avant ce fichier.
+========================================================= */
+
+.register-page .auth-form-wrapper {
+    max-width: 620px;
+}
+
+.register-page .auth-intro {
+    margin-bottom: 30px;
+}
+
+.register-page .auth-form {
+    gap: 18px;
+}
+
+.register-page .password-field .auth-input {
+    padding-right: 76px;
+}
+
+.register-page .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    padding: 4px 6px;
+    color: #15999d;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    transform: translateY(-50%);
+}
+
+.register-page .toggle-password:hover {
+    color: #102e49;
+}
+
+.register-page .terms-field {
+    margin-top: 2px;
+}
+
+.register-page .auth-submit {
+    margin-top: 7px;
+}
+
+@media (max-width: 540px) {
+    .register-page .form-row {
+        grid-template-columns: 1fr;
+    }
+}

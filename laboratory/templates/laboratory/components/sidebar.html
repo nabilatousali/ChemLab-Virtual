@@ -1,0 +1,48 @@
+<aside class="lab-sidebar">
+
+    <a href="{% url 'laboratory:dashboard' %}" class="lab-brand">
+        <span class="lab-brand-symbol">⚗</span>
+        <span>ChemLab <strong>Virtual</strong></span>
+    </a>
+
+    <nav class="lab-navigation">
+
+        <a href="{% url 'laboratory:dashboard' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'workspace' %}active{% endif %}">
+            <span class="nav-icon">⌂</span>
+            <span>laboratoire</span>
+        </a>
+
+        <a href="{% url 'laboratory:dashboard' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <span class="nav-icon">▣</span>
+            <span>Mes expériences</span>
+        </a>
+
+        <a href="#" class="lab-navigation-link">
+            <span class="nav-icon">▥</span>
+            <span>Mes résultats</span>
+        </a>
+
+        <a href="#" class="lab-navigation-link">
+            <span class="nav-icon">♧</span>
+            <span>Mes groupes</span>
+        </a>
+
+        <a href="#" class="lab-navigation-link">
+            <span class="nav-icon">⚙</span>
+            <span>Paramètres</span>
+        </a>
+
+    </nav>
+
+    <div class="lab-sidebar-bottom">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="lab-logout-button">Se déconnecter</button>
+            </form>
+        {% endif %}
+    </div>
+
+</aside>
