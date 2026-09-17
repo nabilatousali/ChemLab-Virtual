@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const menu = document.getElementById(targetId);
             const isOpen = menu.classList.contains("open");
 
-            // Ferme tous les autres menus avant d'ouvrir celui-ci
             document.querySelectorAll(".dropdown-menu.open").forEach(function (openMenu) {
                 openMenu.classList.remove("open");
             });
@@ -23,67 +22,191 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Ferme les menus si on clique ailleurs sur la page
     document.addEventListener("click", function (event) {
         if (!event.target.closest(".dropdown-group")) {
-            document.querySelectorAll(".dropdown-menu.open").forEach(function (menu) {
-                menu.classList.remove("open");
-            });
-            document.querySelectorAll(".dropdown-toggle.open").forEach(function (toggle) {
-                toggle.classList.remove("open");
-            });
+            closeAllMenus();
         }
     });
 
-    // ---------- Ajout d'un élément sur la paillasse ----------
+    function closeAllMenus() {
+        document.querySelectorAll(".dropdown-menu.open").forEach(function (menu) {
+            menu.classList.remove("open");
+        });
+        document.querySelectorAll(".dropdown-toggle.open").forEach(function (toggle) {
+            toggle.classList.remove("open");
+        });
+    }
+
+    // ---------- État de la paillasse ----------
     const workbenchSurface = document.getElementById("workbenchSurface");
     const workbenchPlaceholder = document.getElementById("workbenchPlaceholder");
 
+    let containerCounter = 0;
+    let selectedContainerId = null;
+    // Structure gardée en mémoire pour l'étape suivante (envoi au serveur)
+    const benchState = {};
+
+    function selectContainer(containerId) {
+        document.querySelectorAll(".bench-container").forEach(function (el) {
+            el.classList.remove("selected");
+        });
+        selectedContainerId = containerId;
+        const el = document.querySelector('.bench-container[data-container-id="' + containerId + '"]');
+        if (el) el.classList.add("selected");
+    }
+
+    function createContainer(name, iconUrl) {
+        containerCounter += 1;
+        const containerId = "c" + containerCounter;
+
+        benchState[containerId] = {
+            material: name,
+            pours: []
+        };
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "bench-item bench-container";
+        wrapper.setAttribute("data-container-id", containerId);
+
+        const body = document.createElement("div");
+        body.className = "container-body";
+        if (iconUrl) {
+            const img = document.createElement("img");
+            img.src = iconUrl;
+            img.style.width = "24px";
+            img.style.height = "24px";
+            img.style.margin = "auto";
+            body.appendChild(img);
+        } else {
+            const fallback = document.createElement("i");
+            fallback.setAttribute("data-lucide", "flask-round");
+            fallback.className = "container-icon-fallback";
+            fallback.style.width = "22px";
+            fallback.style.height = "22px";
+            body.appendChild(fallback);
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "container-name";
+        nameEl.textContent = name;
+
+        const contentsEl = document.createElement("div");
+        contentsEl.className = "container-contents";
+        contentsEl.textContent = "Vide";
+
+        const hintEl = document.createElement("div");
+        hintEl.className = "container-select-hint";
+        hintEl.textContent = "Cliquez pour sélectionner";
+
+        wrapper.appendChild(body);
+        wrapper.appendChild(nameEl);
+        wrapper.appendChild(contentsEl);
+        wrapper.appendChild(hintEl);
+
+        wrapper.addEventListener("click", function () {
+            selectContainer(containerId);
+        });
+
+        workbenchSurface.appendChild(wrapper);
+        if (workbenchPlaceholder) workbenchPlaceholder.style.display = "none";
+
+        selectContainer(containerId);
+    }
+
+    function pourReagentIntoContainer(containerId, reagentName, color, volume) {
+        const state = benchState[containerId];
+        if (!state) return;
+
+        state.pours.push({ reagent: reagentName, volume: volume });
+
+        const wrapper = document.querySelector('.bench-container[data-container-id="' + containerId + '"]');
+        if (!wrapper) return;
+
+        const body = wrapper.querySelector(".container-body");
+        const layer = document.createElement("div");
+        layer.className = "container-liquid-layer";
+        layer.style.background = color;
+        layer.style.height = "14px";
+        body.insertBefore(layer, body.firstChild);
+
+        const contentsEl = wrapper.querySelector(".container-contents");
+        const summary = state.pours
+            .map(function (p) { return p.reagent + " (" + p.volume + " mL)"; })
+            .join(", ");
+        contentsEl.textContent = summary;
+    }
+
+    // ---------- Fenêtre de saisie du volume ----------
+    const volumeModalOverlay = document.getElementById("volumeModalOverlay");
+    const volumeModalReagent = document.getElementById("volumeModalReagent");
+    const volumeModalContainer = document.getElementById("volumeModalContainer");
+    const volumeInput = document.getElementById("volumeInput");
+    const volumeModalError = document.getElementById("volumeModalError");
+    const volumeCancel = document.getElementById("volumeCancel");
+    const volumeConfirm = document.getElementById("volumeConfirm");
+
+    let pendingReagent = null;
+
+    function openVolumeModal(reagentName, color) {
+        const containerState = benchState[selectedContainerId];
+        pendingReagent = { name: reagentName, color: color };
+
+        volumeModalReagent.textContent = reagentName;
+        volumeModalContainer.textContent = containerState ? containerState.material : "—";
+        volumeInput.value = "";
+        volumeModalError.textContent = "";
+        volumeModalOverlay.classList.add("open");
+        volumeInput.focus();
+    }
+
+    function closeVolumeModal() {
+        volumeModalOverlay.classList.remove("open");
+        pendingReagent = null;
+    }
+
+    volumeCancel.addEventListener("click", closeVolumeModal);
+
+    volumeModalOverlay.addEventListener("click", function (event) {
+        if (event.target === volumeModalOverlay) closeVolumeModal();
+    });
+
+    volumeConfirm.addEventListener("click", function () {
+        const rawValue = volumeInput.value.trim();
+        const value = parseFloat(rawValue);
+
+        if (rawValue === "" || isNaN(value) || value <= 0) {
+            volumeModalError.textContent = "Indiquez un volume valide, supérieur à 0.";
+            return;
+        }
+
+        pourReagentIntoContainer(selectedContainerId, pendingReagent.name, pendingReagent.color, value);
+        closeVolumeModal();
+    });
+
+    // ---------- Clic sur un élément du menu (matériel ou réactif) ----------
     document.querySelectorAll(".dropdown-item").forEach(function (item) {
         item.addEventListener("click", function () {
             const type = item.getAttribute("data-type");
             const name = item.getAttribute("data-name");
 
-            const benchItem = document.createElement("div");
-            benchItem.className = "bench-item";
-
-            const icon = document.createElement("div");
-            icon.className = "bench-item-icon";
-
             if (type === "material") {
                 const iconUrl = item.getAttribute("data-icon");
-                if (iconUrl) {
-                    const img = document.createElement("img");
-                    img.src = iconUrl;
-                    img.style.width = "20px";
-                    img.style.height = "20px";
-                    icon.appendChild(img);
-                } else {
-                    icon.textContent = "🧪";
-                }
-            } else {
-                const color = item.getAttribute("data-color") || "#3498db";
-                icon.style.background = color;
+                createContainer(name, iconUrl);
+                closeAllMenus();
+                return;
             }
 
-            const label = document.createElement("span");
-            label.textContent = name;
-
-            benchItem.appendChild(icon);
-            benchItem.appendChild(label);
-            workbenchSurface.appendChild(benchItem);
-
-            if (workbenchPlaceholder) {
-                workbenchPlaceholder.style.display = "none";
+            // type === "reagent"
+            if (!selectedContainerId) {
+                alert("Choisissez d'abord un récipient sur la paillasse, puis sélectionnez-le avant de verser un réactif.");
+                closeAllMenus();
+                return;
             }
 
-            // Referme le menu après sélection
-            document.querySelectorAll(".dropdown-menu.open").forEach(function (menu) {
-                menu.classList.remove("open");
-            });
-            document.querySelectorAll(".dropdown-toggle.open").forEach(function (toggle) {
-                toggle.classList.remove("open");
-            });
+            const color = item.getAttribute("data-color") || "#3498db";
+            closeAllMenus();
+            openVolumeModal(name, color);
         });
     });
 
@@ -94,6 +217,9 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".bench-item").forEach(function (el) {
                 el.remove();
             });
+            Object.keys(benchState).forEach(function (key) { delete benchState[key]; });
+            selectedContainerId = null;
+            containerCounter = 0;
             if (workbenchPlaceholder) {
                 workbenchPlaceholder.style.display = "block";
             }
@@ -118,13 +244,89 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function getCsrfToken() {
+        const input = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        return input ? input.value : "";
+    }
+
+    function buildPayload() {
+        const containers = Object.keys(benchState).map(function (id) {
+            return {
+                material: benchState[id].material,
+                pours: benchState[id].pours
+            };
+        });
+        return { containers: containers };
+    }
+
+    function applyResults(data) {
+        document.querySelectorAll("[data-indicator-result]").forEach(function (el) {
+            const indicatorId = el.getAttribute("data-indicator-id");
+            const entry = data.indicators ? data.indicators[indicatorId] : null;
+            if (entry) {
+                el.textContent = "";
+                if (typeof entry.value === "string" && entry.value.match(/^#[0-9a-f]{6}$/i)) {
+                    el.innerHTML = '<span class="color-swatch" style="background:' + entry.value + '"></span>';
+                } else if (typeof entry.value === "boolean") {
+                    el.textContent = entry.value ? "Oui" : "Non";
+                } else if (entry.value !== null && entry.value !== undefined) {
+                    el.textContent = entry.value + (entry.unit || "");
+                } else {
+                    el.textContent = el.getAttribute("data-default");
+                }
+            } else {
+                el.textContent = el.getAttribute("data-default");
+            }
+        });
+
+        if (statusBadge) {
+            if (data.is_successful) {
+                statusBadge.innerHTML = '<span class="status-dot"></span> Expérience réussie (' + data.score + '%)';
+            } else {
+                statusBadge.innerHTML = '<span class="status-dot"></span> À corriger (' + data.score + '%)';
+            }
+        }
+
+        const feedbackPanel = document.getElementById("resultFeedback");
+        const feedbackList = document.getElementById("feedbackList");
+        if (feedbackPanel && feedbackList) {
+            feedbackList.innerHTML = "";
+
+            if (data.details && data.details.length > 0) {
+                data.details.forEach(function (detail) {
+                    const li = document.createElement("li");
+                    li.className = "feedback-item " + (detail.correct ? "correct" : "incorrect");
+
+                    const icon = document.createElement("span");
+                    icon.className = "feedback-icon";
+                    icon.innerHTML = '<i data-lucide="' + (detail.correct ? "check-circle-2" : "x-circle") + '" style="width:18px;height:18px"></i>';
+
+                    const text = document.createElement("span");
+                    text.textContent = detail.reagent + " : " + detail.actual + " mL versés (attendu : " + detail.target + " mL)";
+
+                    li.appendChild(icon);
+                    li.appendChild(text);
+                    feedbackList.appendChild(li);
+                });
+                feedbackPanel.style.display = "block";
+                if (window.lucide) window.lucide.createIcons();
+            } else {
+                feedbackPanel.style.display = "none";
+            }
+        }
+    }
+
     if (startButton) {
         startButton.addEventListener("click", function () {
-            const benchItems = document.querySelectorAll(".bench-item");
-            if (benchItems.length === 0) {
-                alert("Ajoutez au moins un matériel ou un réactif sur la paillasse avant de démarrer.");
+            const containerIds = Object.keys(benchState);
+            const hasPours = containerIds.some(function (id) { return benchState[id].pours.length > 0; });
+
+            if (!hasPours) {
+                alert("Versez au moins un réactif dans un récipient avant de démarrer.");
                 return;
             }
+
+            const submitUrl = startButton.getAttribute("data-submit-url");
 
             startButton.disabled = true;
             if (statusBadge) {
@@ -134,22 +336,38 @@ document.addEventListener("DOMContentLoaded", function () {
             let progress = 0;
             const interval = setInterval(function () {
                 progress += 20;
-                if (progressFill) progressFill.style.width = progress + "%";
-                if (progressPercent) progressPercent.textContent = progress + "%";
+                if (progress <= 80) {
+                    if (progressFill) progressFill.style.width = progress + "%";
+                    if (progressPercent) progressPercent.textContent = progress + "%";
+                }
+            }, 200);
 
-                if (progress >= 100) {
+            fetch(submitUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCsrfToken()
+                },
+                body: JSON.stringify(buildPayload())
+            })
+                .then(function (response) {
+                    if (!response.ok) throw new Error("Réponse serveur invalide");
+                    return response.json();
+                })
+                .then(function (data) {
+                    clearInterval(interval);
+                    if (progressFill) progressFill.style.width = "100%";
+                    if (progressPercent) progressPercent.textContent = "100%";
+                    startButton.disabled = false;
+                    applyResults(data);
+                })
+                .catch(function (error) {
                     clearInterval(interval);
                     startButton.disabled = false;
-                    if (statusBadge) {
-                        statusBadge.innerHTML = '<span class="status-dot"></span> Expérience terminée';
-                    }
-                    // NOTE : les valeurs affichées ici sont un espace réservé.
-                    // Le calcul réel des résultats (moteur de réaction) reste à brancher.
-                    document.querySelectorAll("[data-indicator-result]").forEach(function (el) {
-                        el.textContent = "—";
-                    });
-                }
-            }, 400);
+                    resetProgress();
+                    alert("Une erreur est survenue pendant le calcul des résultats.");
+                    console.error(error);
+                });
         });
     }
 });

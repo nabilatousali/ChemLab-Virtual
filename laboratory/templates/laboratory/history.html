@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Historique — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/history.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">ChemLab Virtual / Historique</p>
+                <h1>Mes historiques</h1>
+                <p class="lab-header-description">
+                    L'ensemble des expériences que vous avez réalisées sur la plateforme.
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>Bonjour, <strong>{{ user.first_name|default:user.username }}</strong></span>
+                <div class="lab-avatar">{{ user.username|first|upper }}</div>
+            </div>
+        </header>
+
+        <section class="history-panel">
+            <ul class="history-list">
+                {% for result in results %}
+                    <li>
+                        <div class="history-dot {% if result.is_successful %}success{% else %}error{% endif %}"></div>
+
+                        <div class="history-cell">
+                            <strong>{{ result.experiment.title }}</strong>
+                            <span>{{ result.completed_at|date:"d/m/Y H:i" }}</span>
+                        </div>
+
+                        <span class="history-score {% if not result.is_successful %}failed{% endif %}">
+                            {% if result.summary %}
+                                {{ result.summary }}
+                            {% elif result.is_successful %}
+                                Réussie
+                            {% else %}
+                                À corriger
+                            {% endif %}
+                        </span>
+
+                        <a href="{% url 'laboratory:workspace' result.experiment.slug %}"
+                           class="history-retry">
+                            Recommencer
+                        </a>
+                    </li>
+                {% empty %}
+                    <p class="dropdown-empty">
+                        Aucun historique pour l'instant.
+                        Rendez-vous dans le laboratoire pour réaliser votre première expérience.
+                    </p>
+                {% endfor %}
+            </ul>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

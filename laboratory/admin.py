@@ -11,6 +11,7 @@ from .models import (
     ExperimentIndicator,
     ExperimentResult,
     ResultValue,
+    ExpectedReagentAmount,
 )
 
 admin.site.register(Material)
@@ -24,3 +25,4 @@ admin.site.register(ExperimentReagent)
 admin.site.register(ProtocolStep)
 admin.site.register(ExperimentIndicator)
 admin.site.register(ResultValue)
+admin.site.register(ExpectedReagentAmount)

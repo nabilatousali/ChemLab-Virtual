@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ group.name }} — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/groups.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb"><a href="{% url 'groups:list' %}">Mes groupes</a> / {{ group.name }}</p>
+                <h1>{{ group.name }}</h1>
+                <p class="lab-header-description">{{ group.description|default:"Aucune description." }}</p>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="groups-messages">
+                {% for message in messages %}
+                    <div class="groups-message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="group-detail-grid">
+
+            <section class="group-panel">
+                <h2><i data-lucide="users" style="width:18px;height:18px;vertical-align:-3px"></i> Membres</h2>
+
+                <ul class="group-member-list">
+                    {% for membership in memberships %}
+                        <li>
+                            <span class="group-member-avatar">{{ membership.user.username|first|upper }}</span>
+                            <span>{{ membership.user.username }}{% if membership.user == group.created_by %} <em>(créateur)</em>{% endif %}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <form method="post" action="{% url 'groups:invite_member' group.slug %}" class="group-inline-form">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Nom d'utilisateur à inviter" required>
+                    <button type="submit"><i data-lucide="user-plus" style="width:16px;height:16px"></i></button>
+                </form>
+                <p class="group-hint">La personne doit déjà avoir un compte sur la plateforme. Elle recevra une notification et pourra accepter ou refuser.</p>
+
+                {% if pending_invitations_sent %}
+                    <div class="group-pending-invites">
+                        <p class="group-hint">En attente de réponse :</p>
+                        <ul>
+                            {% for invitation in pending_invitations_sent %}
+                                <li>{{ invitation.invited_user.username }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="group-panel">
+                <h2><i data-lucide="share-2" style="width:18px;height:18px;vertical-align:-3px"></i> Expériences partagées</h2>
+
+                <ul class="group-shared-list">
+                    {% for share in shared_results %}
+                        <li>
+                            <strong>{{ share.result.experiment.title }}</strong>
+                            <span class="group-shared-meta">
+                                par {{ share.shared_by.username }} —
+                                {% if share.result.is_successful %}réussie{% else %}à corriger{% endif %}
+                            </span>
+                        </li>
+                    {% empty %}
+                        <p class="dropdown-empty">Aucune expérience partagée pour l'instant.</p>
+                    {% endfor %}
+                </ul>
+
+                {% if my_results %}
+                    <form method="post" action="{% url 'groups:share_result' group.slug %}" class="group-inline-form">
+                        {% csrf_token %}
+                        <select name="result_id" required>
+                            <option value="">Choisir une de mes expériences réalisées…</option>
+                            {% for result in my_results %}
+                                <option value="{{ result.id }}">{{ result.experiment.title }} — {{ result.completed_at|date:"d/m/Y H:i" }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit"><i data-lucide="send" style="width:16px;height:16px"></i></button>
+                    </form>
+                {% else %}
+                    <p class="group-hint">Réalisez une expérience dans le laboratoire pour pouvoir la partager ici.</p>
+                {% endif %}
+            </section>
+
+        </div>
+
+        <section class="group-panel group-chat-panel">
+            <h2><i data-lucide="message-circle" style="width:18px;height:18px;vertical-align:-3px"></i> Chat du groupe</h2>
+
+            <div class="group-chat-messages" id="groupChatMessages">
+                {% for message in chat_messages %}
+                    <div class="group-chat-message {% if message.sender == user %}mine{% endif %}">
+                        <span class="group-chat-sender">{{ message.sender.username }}</span>
+                        <p>{{ message.content }}</p>
+                        <span class="group-chat-time">{{ message.sent_at|date:"d/m H:i" }}</span>
+                    </div>
+                {% empty %}
+                    <p class="dropdown-empty">Aucun message pour l'instant — lancez la discussion.</p>
+                {% endfor %}
+            </div>
+
+            <form method="post" action="{% url 'groups:send_message' group.slug %}" class="group-chat-form">
+                {% csrf_token %}
+                <input type="text" name="content" placeholder="Écrire un message…" autocomplete="off" required>
+                <button type="submit"><i data-lucide="send" style="width:18px;height:18px"></i></button>
+            </form>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var chat = document.getElementById("groupChatMessages");
+        if (chat) chat.scrollTop = chat.scrollHeight;
+    });
+</script>
+{% endblock %}

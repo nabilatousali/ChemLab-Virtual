@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mon profil — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/history.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">ChemLab Virtual / Profil</p>
+                <h1>Mon profil</h1>
+                <p class="lab-header-description">
+                    Vos informations personnelles et votre progression sur la plateforme.
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>Bonjour, <strong>{{ user.first_name|default:user.username }}</strong></span>
+                <div class="lab-avatar">{{ user.username|first|upper }}</div>
+            </div>
+        </header>
+
+        <section class="stat-cards">
+
+            <article class="stat-card">
+                <span class="stat-icon" style="background:#eef2ff;color:#4338ca">
+                    <i data-lucide="flask-conical" style="width:20px;height:20px"></i>
+                </span>
+                <div>
+                    <p>Expériences réalisées</p>
+                    <strong>{{ total_results }}</strong>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-icon" style="background:#ecfdf5;color:#059669">
+                    <i data-lucide="check-circle-2" style="width:20px;height:20px"></i>
+                </span>
+                <div>
+                    <p>Réussies</p>
+                    <strong>{{ successful_results }}</strong>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-icon" style="background:#fef3c7;color:#d97706">
+                    <i data-lucide="target" style="width:20px;height:20px"></i>
+                </span>
+                <div>
+                    <p>Score moyen</p>
+                    <strong>{{ average_score|default:"—" }}{% if average_score %} %{% endif %}</strong>
+                </div>
+            </article>
+
+        </section>
+
+        <div class="profile-grid">
+
+            <section class="profile-card">
+                <h2><i data-lucide="user" style="width:18px;height:18px;vertical-align:-3px"></i> Mes informations</h2>
+
+                <div class="profile-avatar-lg">{{ user.username|first|upper }}</div>
+                <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
+
+                <ul class="profile-meta">
+                    <li>
+                        <span>Nom d'utilisateur</span>
+                        <strong>{{ user.username }}</strong>
+                    </li>
+                    <li>
+                        <span>Adresse e-mail</span>
+                        <strong>{{ user.email|default:"Non renseignée" }}</strong>
+                    </li>
+                    <li>
+                        <span>Membre depuis le</span>
+                        <strong>{{ user.date_joined|date:"d/m/Y" }}</strong>
+                    </li>
+                </ul>
+
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="profile-logout">Se déconnecter</button>
+                </form>
+            </section>
+
+            <section class="profile-card">
+                <h2><i data-lucide="clock" style="width:18px;height:18px;vertical-align:-3px"></i> Dernières expériences</h2>
+
+                <ul class="history-list">
+                    {% for result in results|slice:":5" %}
+                        <li>
+                            <div class="history-dot {% if result.is_successful %}success{% else %}error{% endif %}"></div>
+                            <div class="history-cell">
+                                <strong>{{ result.experiment.title }}</strong>
+                                <span>{{ result.completed_at|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            <span class="history-score">{% if result.summary %}{{ result.summary }}{% elif result.is_successful %}Réussie{% else %}À corriger{% endif %}</span>
+                        </li>
+                    {% empty %}
+                        <p class="dropdown-empty">Aucune expérience réalisée pour l'instant.</p>
+                    {% endfor %}
+                </ul>
+            </section>
+
+        </div>
+
+    </main>
+</div>
+{% endblock %}

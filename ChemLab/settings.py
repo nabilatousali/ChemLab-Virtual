@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 
 import os
+import sys
+
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -26,12 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^7mld%+(a+a+&_*us3wklr#la=ld2h$7n4@ggf#p$07g1azg8l'
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    'django-insecure-^7mld%+(a+a+&_*us3wklr#la=ld2h$7n4@ggf#p$07g1azg8l'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if host
+]
 
 
 # Application definition
@@ -44,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-     'accounts',
+    'accounts',
     'experiments',
     'laboratory',
     'groups',
@@ -58,6 +65,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Sécurité : exige une authentification sur toute la plateforme,
+    # sauf pour les pages publiques (accueil, catalogue, connexion...).
+    'accounts.middleware.RequireLoginMiddleware',
 ]
 
 ROOT_URLCONF = 'ChemLab.urls'
@@ -74,6 +85,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "groups.context_processors.pending_invitations_count",
             ],
         },
     },
@@ -88,9 +100,17 @@ WSGI_APPLICATION = 'ChemLab.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
+        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3')
     )
 }
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
+    }
 
 
 
@@ -145,9 +165,59 @@ LOGOUT_REDIRECT_URL = "laboratory:home"
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# ---------------------------------------------------------------------------
+# Sécurité de la plateforme (normes Django / OWASP)
+# ---------------------------------------------------------------------------
+
+
+def _env_true(key, default="false"):
+    """Lit une variable d'environnement booléenne."""
+    return os.environ.get(key, default).lower() in ("1", "true", "yes")
+
+
+# --- En-têtes de sécurité (safe en local HTTP) ---
+# Empêche le navigateur de deviner le type de contenu des réponses.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Interdit l'affichage de la plateforme dans un <iframe> (anti-clickjacking).
+X_FRAME_OPTIONS = "DENY"
+
+# Politique de référrent : on limite les informations transmises à un site tiers.
+SECURE_REFERRER_POLICY = "same-origin"
+
+# Isole le contexte de navigation de l'application vis-à-vis des autres onglets.
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+
+# --- HTTPS (activé en production via les variables d'environnement) ---
+_SECURE = _env_true("DJANGO_SECURE_SSL_REDIRECT")
+if _SECURE:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+    # HSTS : force le navigateur à n'utiliser que HTTPS pendant 1 an.
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+# --- Cookies de session / CSRF ---
+# Le cookie de session n'est accessible que via HTTP (jamais en JavaScript).
+SESSION_COOKIE_HTTPONLY = True
+
+# Envoi restreint des cookies (protection CSRF par SameSite).
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+# Cookie de session chiffré uniquement en HTTPS.
+if _env_true("DJANGO_SESSION_COOKIE_SECURE"):
+    SESSION_COOKIE_SECURE = True
+
+# Cookie de CSRF chiffré uniquement en HTTPS.
+if _env_true("DJANGO_CSRF_COOKIE_SECURE"):
+    CSRF_COOKIE_SECURE = True
+
+# Le jeton CSRF est stocké dans la session (et jamais dans un cookie persistant).
+CSRF_USE_SESSIONS = True
 

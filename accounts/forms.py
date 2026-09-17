@@ -137,7 +137,7 @@ class LoginForm(forms.Form):
         if email and password:
             try:
                 user_by_email = User.objects.get(
-                    email__iexact=email.strip()
+                    email__iexact=email.strip().lower()
                 )
             except User.DoesNotExist:
                 raise forms.ValidationError(

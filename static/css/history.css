@@ -1,0 +1,129 @@
+/* =========================================================
+   PAGE HISTORIQUE
+   Fichier : laboratory/history.html
+   ========================================================= */
+
+/* ---- Panneau historique ---- */
+
+.history-panel {
+    margin-top: 32px;
+    padding: 12px 28px;
+    border: 1px solid #e2edef;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow:
+        0 1px 3px rgba(16, 46, 73, 0.04),
+        0 14px 38px rgba(16, 46, 73, 0.06);
+}
+
+.history-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.history-list li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 10px;
+    border-radius: 12px;
+    border-bottom: 1px solid #eef4f5;
+    transition: background 0.2s ease;
+}
+
+.history-list li:hover {
+    background: #f7fbfc;
+}
+
+.history-list li:last-child {
+    border-bottom: 0;
+}
+
+.history-dot {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: transform 0.2s ease;
+}
+
+.history-list li:hover .history-dot {
+    transform: scale(1.25);
+}
+
+.history-dot.success {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+}
+
+.history-dot.error {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.history-cell {
+    flex: 1;
+    min-width: 0;
+}
+
+.history-cell strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #102e49;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.history-cell span {
+    color: #93a5ae;
+    font-size: 12px;
+}
+
+.history-score {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    color: #059669;
+    border-radius: 999px;
+    background: #ecfdf5;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.history-score.failed {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+.history-retry {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #15999d;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.history-retry:hover {
+    color: #0c5874;
+    text-decoration: underline;
+}
+
+/* ---- Empty state ---- */
+
+.history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 40px 20px;
+    color: #93a5ae;
+    font-size: 14px;
+    text-align: center;
+}

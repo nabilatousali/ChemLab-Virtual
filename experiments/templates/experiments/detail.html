@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ experiment.title }} — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'css/catalogue.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/experiment-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<header class="catalogue-header">
+    <div class="container nav-inner">
+        <a href="{% url 'laboratory:home' %}" class="logo">
+            ChemLab <span>Virtual</span>
+        </a>
+    </div>
+</header>
+
+<main class="detail-page">
+
+    <article class="container detail-card">
+
+        <div class="detail-image">
+            {% if experiment.image %}
+                <img src="{{ experiment.image.url }}"
+                     alt="{{ experiment.title }}">
+            {% else %}
+                <img src="{% static 'images/chemlab-experiments.jpg' %}"
+                     alt="{{ experiment.title }}">
+            {% endif %}
+        </div>
+
+        <div class="detail-content">
+            <div class="experiment-meta">
+                <span>{{ experiment.get_level_display }}</span>
+                <span>{{ experiment.duration }} min</span>
+            </div>
+
+            <h1>{{ experiment.title }}</h1>
+
+            <p>{{ experiment.description|default:experiment.short_description }}</p>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'laboratory:workspace' experiment.slug %}"
+                   class="detail-cta">
+                    Ouvrir le laboratoire →
+                </a>
+
+            {% else %}
+
+                <p class="detail-auth-note">
+                    Le laboratoire est réservé aux utilisateurs inscrits.
+                    Créez un compte pour réaliser cette expérience.
+                </p>
+
+                <div class="detail-cta-row">
+                    <a href="{% url 'accounts:register' %}?next={% url 'laboratory:workspace' experiment.slug %}"
+                       class="detail-cta">
+                        S'inscrire et expérimenter
+                    </a>
+
+                    <a href="{% url 'accounts:login' %}?next={% url 'laboratory:workspace' experiment.slug %}"
+                       class="detail-cta-ghost">
+                        J'ai déjà un compte
+                    </a>
+                </div>
+
+            {% endif %}
+        </div>
+
+    </article>
+
+    <div class="container">
+        <a href="{% url 'experiments:catalogue' %}"
+           class="detail-back">
+            ← Retour au catalogue
+        </a>
+    </div>
+
+</main>
+
+{% endblock %}

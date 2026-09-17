@@ -24,4 +24,10 @@ urlpatterns = [
         views.logout_view,
         name="logout",
     ),
+
+    path(
+        "profil/",
+        views.profile_view,
+        name="profile",
+    ),
 ]

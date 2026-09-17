@@ -81,12 +81,12 @@
                     </h2>
 
                     <p>
-                        {{ experiment.description }}
+                        {{ experiment.short_description }}
                     </p>
 
                     <div class="experiment-card-footer">
                         <span>
-                            Niveau {{ experiment.level }}
+                            Niveau {{ experiment.get_level_display }}
                         </span>
 
                         <a

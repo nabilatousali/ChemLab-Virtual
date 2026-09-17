@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mes groupes — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/groups.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">ChemLab Virtual / Mes groupes</p>
+                <h1>Mes groupes</h1>
+                <p class="lab-header-description">Travaillez à plusieurs, partagez vos expériences et échangez.</p>
+            </div>
+
+            <div class="lab-user">
+                <span>Bonjour, <strong>{% if user.is_authenticated %}{{ user.first_name|default:user.username }}{% else %}Visiteur{% endif %}</strong></span>
+                <div class="lab-avatar">{% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}V{% endif %}</div>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="groups-messages">
+                {% for message in messages %}
+                    <div class="groups-message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if pending_invitations %}
+            <section class="notifications-panel">
+                <h2><i data-lucide="bell" style="width:18px;height:18px;vertical-align:-3px"></i> Notifications</h2>
+
+                <ul class="notifications-list">
+                    {% for invitation in pending_invitations %}
+                        <li>
+                            <div class="notification-text">
+                                <strong>{{ invitation.invited_by.username }}</strong>
+                                vous invite à rejoindre le groupe
+                                <strong>{{ invitation.group.name }}</strong>
+                            </div>
+
+                            <div class="notification-actions">
+                                <form method="post" action="{% url 'groups:respond_invitation' invitation.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="accept">
+                                    <button type="submit" class="notif-btn accept">
+                                        <i data-lucide="check" style="width:15px;height:15px"></i> Accepter
+                                    </button>
+                                </form>
+
+                                <form method="post" action="{% url 'groups:respond_invitation' invitation.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="decline">
+                                    <button type="submit" class="notif-btn decline">
+                                        <i data-lucide="x" style="width:15px;height:15px"></i> Refuser
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        <a href="{% url 'groups:create' %}" class="groups-create-button">
+            <i data-lucide="plus" style="width:16px;height:16px"></i> Créer un groupe
+        </a>
+
+        <section class="groups-grid">
+            {% for group in groups %}
+                <a href="{% url 'groups:detail' group.slug %}" class="group-card">
+                    <div class="group-card-icon"><i data-lucide="users" style="width:22px;height:22px"></i></div>
+                    <h2>{{ group.name }}</h2>
+                    <p>{{ group.description|default:"Aucune description." }}</p>
+                    <span class="group-card-meta">{{ group.memberships.count }} membre{{ group.memberships.count|pluralize }}</span>
+                </a>
+            {% empty %}
+                <p class="dropdown-empty">Vous n'êtes membre d'aucun groupe pour l'instant.</p>
+            {% endfor %}
+        </section>
+
+    </main>
+</div>
+{% endblock %}

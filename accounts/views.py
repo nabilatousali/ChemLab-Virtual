@@ -51,3 +51,32 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("laboratory:home")
+
+
+@login_required
+def profile_view(request):
+    from laboratory.models import ExperimentResult
+
+    results = (
+        ExperimentResult.objects
+        .filter(user=request.user)
+        .select_related("experiment")
+        .order_by("-completed_at")
+    )
+
+    total = results.count()
+    succeeded = results.filter(is_successful=True).count()
+    scores = [
+        int(r.summary.split(":")[-1].replace("%", "").strip())
+        for r in results
+        if ":" in r.summary
+    ]
+    average = round(sum(scores) / len(scores)) if scores else None
+
+    context = {
+        "results": results,
+        "total_results": total,
+        "successful_results": succeeded,
+        "average_score": average,
+    }
+    return render(request, "accounts/profile.html", context)

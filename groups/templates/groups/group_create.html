@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Créer un groupe — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/groups.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-layout">
+
+    {% include "laboratory/components/sidebar.html" %}
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb"><a href="{% url 'groups:list' %}">Mes groupes</a> / Créer</p>
+                <h1>Créer un groupe</h1>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="groups-messages">
+                {% for message in messages %}
+                    <div class="groups-message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="group-form">
+            {% csrf_token %}
+
+            <label for="name">Nom du groupe</label>
+            <input type="text" id="name" name="name" placeholder="Ex : Groupe TP Chimie organique" required>
+
+            <label for="description">Description (optionnelle)</label>
+            <textarea id="description" name="description" rows="4" placeholder="À quoi sert ce groupe ?"></textarea>
+
+            <button type="submit" class="groups-create-button">
+                <i data-lucide="check" style="width:16px;height:16px"></i> Créer le groupe
+            </button>
+        </form>
+
+    </main>
+</div>
+{% endblock %}

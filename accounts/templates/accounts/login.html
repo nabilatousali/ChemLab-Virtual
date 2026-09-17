@@ -119,7 +119,7 @@
                 <div class="form-field">
 
                     <label
-                        for="{{ form.username.id_for_label }}"
+                        for="{{ form.email.id_for_label }}"
                     >
                         Adresse e-mail
                     </label>
@@ -148,11 +148,11 @@
                             </svg>
                         </span>
 
-                        {{ form.username }}
+                        {{ form.email }}
 
                     </div>
 
-                    {% for error in form.username.errors %}
+                    {% for error in form.email.errors %}
                         <small class="field-error">
                             {{ error }}
                         </small>

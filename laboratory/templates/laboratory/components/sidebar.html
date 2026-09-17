@@ -1,46 +1,60 @@
 <aside class="lab-sidebar">
 
-    <a href="{% url 'laboratory:dashboard' %}" class="lab-brand">
-        <span class="lab-brand-symbol">⚗</span>
-        <span>ChemLab <strong>Virtual</strong></span>
+    <a href="{% url 'laboratory:dashboard' %}" class="lab-brand" title="ChemLab Virtual">
+        <span class="lab-brand-symbol"><i data-lucide="flask-conical" style="width:20px;height:20px"></i></span>
+        <span class="lab-brand-text">ChemLab <strong>Virtual</strong></span>
     </a>
 
     <nav class="lab-navigation">
 
-        <a href="{% url 'laboratory:dashboard' %}"
-           class="lab-navigation-link {% if request.resolver_match.url_name == 'workspace' %}active{% endif %}">
-            <span class="nav-icon">⌂</span>
-            <span>laboratoire</span>
+        <a href="{% url 'accounts:profile' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+           title="Profil">
+            <span class="nav-icon"><i data-lucide="circle-user" style="width:18px;height:18px"></i></span>
+            <span class="nav-label">Profil</span>
         </a>
 
         <a href="{% url 'laboratory:dashboard' %}"
-           class="lab-navigation-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            <span class="nav-icon">▣</span>
-            <span>Mes expériences</span>
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+           title="Expériences">
+            <span class="nav-icon"><i data-lucide="flask-conical" style="width:18px;height:18px"></i></span>
+            <span class="nav-label">Expériences</span>
         </a>
 
-        <a href="#" class="lab-navigation-link">
-            <span class="nav-icon">▥</span>
-            <span>Mes résultats</span>
+        <a href="{% url 'laboratory:laboratory' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'workspace' %}active{% endif %}"
+           title="Laboratoire">
+            <span class="nav-icon"><i data-lucide="flask-round" style="width:18px;height:18px"></i></span>
+            <span class="nav-label">Laboratoire</span>
         </a>
 
-        <a href="#" class="lab-navigation-link">
-            <span class="nav-icon">♧</span>
-            <span>Mes groupes</span>
+        <a href="{% url 'laboratory:history' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'history' %}active{% endif %}"
+           title="Historique">
+            <span class="nav-icon"><i data-lucide="history" style="width:18px;height:18px"></i></span>
+            <span class="nav-label">Historique</span>
         </a>
 
-        <a href="#" class="lab-navigation-link">
-            <span class="nav-icon">⚙</span>
-            <span>Paramètres</span>
+        <a href="{% url 'groups:list' %}"
+           class="lab-navigation-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}"
+           title="Groupes">
+            <span class="nav-icon"><i data-lucide="users" style="width:18px;height:18px"></i></span>
+            <span class="nav-label">Groupes</span>
         </a>
 
     </nav>
 
     <div class="lab-sidebar-bottom">
+        {% if pending_invitations_count %}
+            <span class="sidebar-badge" title="Invitations en attente">{{ pending_invitations_count }}</span>
+        {% endif %}
         {% if user.is_authenticated %}
-            <form method="post" action="{% url 'accounts:logout' %}">
+            <form method="post" action="{% url 'accounts:logout' %}" class="lab-logout-form">
                 {% csrf_token %}
-                <button type="submit" class="lab-logout-button">Se déconnecter</button>
+                <button type="submit" class="lab-logout-button" title="Se déconnecter">
+                    <i data-lucide="log-out" style="width:17px;height:17px"></i>
+                    <span class="nav-label">Se déconnecter</span>
+                </button>
             </form>
         {% endif %}
     </div>

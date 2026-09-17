@@ -127,3 +127,17 @@ class ResultValue(models.Model):
 
     def __str__(self):
         return f"{self.indicator.name} = {self.value}"
+
+
+class ExpectedReagentAmount(models.Model):
+    """La quantité correcte d'un réactif à verser pour une expérience donnée."""
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="expected_reagents")
+    reagent = models.ForeignKey(Reagent, on_delete=models.CASCADE)
+    target_volume = models.FloatField(help_text="Volume correct attendu, en mL")
+    tolerance = models.FloatField(default=1.0, help_text="Marge d'erreur acceptée, en mL")
+
+    class Meta:
+        unique_together = ("experiment", "reagent")
+
+    def __str__(self):
+        return f"{self.experiment.title} - {self.reagent.name} : {self.target_volume} mL"

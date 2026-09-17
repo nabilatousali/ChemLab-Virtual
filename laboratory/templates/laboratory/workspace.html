@@ -56,7 +56,7 @@
 
                 <div class="dropdown-group">
                     <button class="dropdown-toggle" data-target="materialMenu" type="button">
-                        🧪 Matériel <span class="chevron">▾</span>
+                        <i data-lucide="flask-conical" style="width:16px;height:16px"></i> Matériel <span class="chevron">▾</span>
                     </button>
                     <div class="dropdown-menu" id="materialMenu">
                         {% for em in materials %}
@@ -67,7 +67,7 @@
                                 {% if em.material.icon %}
                                     <img src="{{ em.material.icon.url }}" alt="">
                                 {% else %}
-                                    <span class="dropdown-item-fallback">🧫</span>
+                                    <span class="dropdown-item-fallback"><i data-lucide="flask-conical" style="width:16px;height:16px"></i></span>
                                 {% endif %}
                                 {{ em.material.name }}
                             </button>
@@ -79,7 +79,7 @@
 
                 <div class="dropdown-group">
                     <button class="dropdown-toggle" data-target="reagentMenu" type="button">
-                        🧫 Réactifs <span class="chevron">▾</span>
+                        <i data-lucide="test-tube-2" style="width:16px;height:16px"></i> Réactifs <span class="chevron">▾</span>
                     </button>
                     <div class="dropdown-menu" id="reagentMenu">
                         {% for er in reagents %}
@@ -97,23 +97,27 @@
                 </div>
 
                 <p class="workspace-hint">
-                    Choisissez un élément dans les menus ci-dessus pour l'ajouter à la paillasse.
+                    1. Choisissez un matériel pour créer un récipient.<br>
+                    2. Cliquez sur ce récipient pour le sélectionner.<br>
+                    3. Choisissez un réactif à y verser et indiquez le volume.
                 </p>
             </aside>
 
             <div class="workbench">
                 <div class="workbench-surface" id="workbenchSurface">
                     <p class="workbench-placeholder" id="workbenchPlaceholder">
-                        La paillasse est vide — ajoutez du matériel pour commencer.
+                        La paillasse est vide — ajoutez un matériel pour commencer.
                     </p>
                 </div>
                 <div class="workbench-controls">
-                    <button type="button" id="resetBench" title="Réinitialiser la paillasse">↺</button>
+                    <button type="button" id="resetBench" title="Réinitialiser la paillasse">
+                        <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i>
+                    </button>
                 </div>
             </div>
 
             <aside class="protocol-panel">
-                <h2>📖 Protocole</h2>
+                <h2><i data-lucide="book-open" style="width:18px;height:18px;vertical-align:-3px"></i> Protocole</h2>
 
                 <ol class="protocol-steps">
                     {% for step in steps %}
@@ -139,8 +143,10 @@
                     </div>
                 </div>
 
-                <button type="button" class="start-button" id="startExperiment">
-                    ▶ Démarrer l'expérience
+                {% csrf_token %}
+                <button type="button" class="start-button" id="startExperiment"
+                        data-submit-url="{% url 'laboratory:submit_result' experiment.slug %}">
+                    <i data-lucide="play" style="width:16px;height:16px;vertical-align:-2px"></i> Démarrer l'expérience
                 </button>
             </aside>
 
@@ -152,7 +158,9 @@
                     <div class="result-icon">{{ ei.indicator.name|slice:":2" }}</div>
                     <div>
                         <p>{{ ei.indicator.name }}</p>
-                        <strong data-indicator-result data-default="—{{ ei.indicator.unit }}">
+                        <strong data-indicator-result
+                                data-indicator-id="{{ ei.indicator.id }}"
+                                data-default="—{{ ei.indicator.unit }}">
                             —{{ ei.indicator.unit }}
                         </strong>
                     </div>
@@ -162,8 +170,30 @@
             {% endfor %}
         </section>
 
+        <section class="feedback-panel" id="resultFeedback" style="display:none;">
+            <h3>Détail de votre manipulation</h3>
+            <ul id="feedbackList"></ul>
+        </section>
+
     </main>
 
+</div>
+
+<!-- Fenêtre de saisie du volume versé -->
+<div class="volume-modal-overlay" id="volumeModalOverlay">
+    <div class="volume-modal">
+        <h3>Verser <span id="volumeModalReagent">un réactif</span></h3>
+        <p>Dans : <strong id="volumeModalContainer">—</strong></p>
+
+        <label for="volumeInput">Volume à verser (mL)</label>
+        <input type="number" id="volumeInput" min="0" step="0.1" placeholder="Ex : 10">
+        <p class="volume-modal-error" id="volumeModalError"></p>
+
+        <div class="volume-modal-actions">
+            <button type="button" id="volumeCancel" class="volume-btn-secondary">Annuler</button>
+            <button type="button" id="volumeConfirm" class="volume-btn-primary">Verser</button>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
