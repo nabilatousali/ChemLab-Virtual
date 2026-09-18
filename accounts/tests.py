@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
+import re
 
 from experiments.models import Experiment
 from .admin import UserAdmin
@@ -153,3 +158,177 @@ class LoginViewTest(TestCase):
         self.assertFormError(
             response.context["form"], None, "Adresse e-mail ou mot de passe incorrect."
         )
+
+
+class AdminDashboardTest(TestCase):
+    """Le dashboard admin est privé : staff uniquement, invisible côté plateforme."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.staff = User.objects.create_user(
+            username="staff", password="TestPass123!", is_staff=True
+        )
+        cls.member = User.objects.create_user(
+            username="member", password="TestPass123!"
+        )
+
+    def test_admin_index_redirects_anonymous_to_admin_login(self):
+        response = self.client.get("/admin/")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/admin/login/", response.url)
+
+    def test_admin_index_redirects_non_staff(self):
+        self.client.force_login(self.member)
+        response = self.client.get("/admin/")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/admin/login/", response.url)
+
+    def test_staff_sees_dashboard_with_stats(self):
+        Experiment.objects.create(
+            title="Dosage",
+            slug="dosage",
+            short_description="Test",
+            is_published=True,
+        )
+        self.client.force_login(self.staff)
+        response = self.client.get("/admin/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Tableau de bord")
+        self.assertContains(response, "Utilisateurs inscrits")
+
+    def test_no_admin_link_on_public_pages(self):
+        for url in (
+            reverse("laboratory:home"),
+            reverse("experiments:catalogue"),
+        ):
+            with self.subTest(url=url):
+                self.assertNotContains(self.client.get(url), "/admin/")
+
+
+class NavbarVariantsTest(TestCase):
+    """La navbar visiteur et la navbar connectée sont différentes."""
+
+    def navbar_section(self, response):
+        content = response.content.decode()
+        match = re.search(
+            r'<nav class="navbar__nav".*?</nav>', content, re.DOTALL
+        )
+        self.assertIsNotNone(match)
+        return match.group(0)
+
+    def test_visitor_navbar_shows_only_public_links(self):
+        response = self.client.get(reverse("laboratory:home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "images/logo.svg")
+        navbar = self.navbar_section(response)
+        for label in ("Accueil", "Catalogue", "S'inscrire"):
+            with self.subTest(label=label):
+                self.assertIn(label, navbar)
+        for label in (
+            "Expériences",
+            "Laboratoire",
+            "Paillasse",
+            "Groupes",
+            "Historique",
+            "Profil",
+            "Se connecter",
+        ):
+            with self.subTest(label=label):
+                self.assertNotIn(label, navbar)
+
+    def test_authenticated_navbar_shows_only_lab_links(self):
+        user = User.objects.create_user(username="navuser", password="TestPass123!")
+        self.client.force_login(user)
+        response = self.client.get(reverse("laboratory:dashboard"))
+        self.assertEqual(response.status_code, 200)
+        navbar = self.navbar_section(response)
+        for label in ("Expériences", "Laboratoire", "Paillasse", "Groupes", "Historique", "Profil"):
+            with self.subTest(label=label):
+                self.assertIn(label, navbar)
+        for label in ("Accueil", "Catalogue", "S'inscrire", "Se connecter"):
+            with self.subTest(label=label):
+                self.assertNotIn(label, navbar)
+
+
+class SecurityTrioTest(TestCase):
+    """Redirect next validé, anti brute-force, activation e-mail."""
+
+    def setUp(self):
+        self.password = "TestPass123!"
+        self.user = User.objects.create_user(
+            username="secure", email="secure@example.com", password=self.password
+        )
+
+    def test_open_redirect_blocked(self):
+        response = self.client.post(
+            reverse("accounts:login") + "?next=http://evil.example/phish",
+            {"email": "secure@example.com", "password": self.password},
+        )
+        self.assertRedirects(response, reverse("laboratory:dashboard"))
+
+    def test_valid_next_preserved(self):
+        bench_url = reverse("laboratory:bench")
+        response = self.client.post(
+            reverse("accounts:login") + f"?next={bench_url}",
+            {"email": "secure@example.com", "password": self.password},
+        )
+        self.assertRedirects(response, bench_url)
+
+    def test_bruteforce_locks_account(self):
+        login_url = reverse("accounts:login")
+        for _ in range(4):
+            response = self.client.post(
+                login_url,
+                {"email": "secure@example.com", "password": "mauvais-mot-de-passe"},
+            )
+            self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            login_url,
+            {"email": "secure@example.com", "password": "mauvais-mot-de-passe"},
+        )
+        self.assertEqual(response.status_code, 429)
+
+    def register_new_user(self):
+        self.client.post(reverse("accounts:register"), {
+            "first_name": "Nadia",
+            "last_name": "Test",
+            "username": "nouveau",
+            "email": "nouveau@example.com",
+            "password": "TestPass123!",
+            "password_confirmation": "TestPass123!",
+        })
+        return User.objects.get(username="nouveau")
+
+    def test_register_creates_inactive_user(self):
+        user = self.register_new_user()
+        self.assertFalse(user.is_active)
+
+    def test_login_refused_before_activation(self):
+        self.register_new_user()
+        response = self.client.post(reverse("accounts:login"), {
+            "email": "nouveau@example.com",
+            "password": "TestPass123!",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "pas encore activé")
+
+    def test_activation_link_activates_and_logs_in(self):
+        user = self.register_new_user()
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        response = self.client.get(
+            reverse("accounts:activate", kwargs={"uidb64": uid, "token": token})
+        )
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)
+        self.assertRedirects(response, reverse("laboratory:dashboard"))
+
+    def test_invalid_activation_link_rejected(self):
+        user = self.register_new_user()
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        response = self.client.get(
+            reverse("accounts:activate", kwargs={"uidb64": uid, "token": "invalide"})
+        )
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        self.assertRedirects(response, reverse("accounts:login"))

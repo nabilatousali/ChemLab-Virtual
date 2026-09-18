@@ -9,9 +9,8 @@
 {% endblock %}
 
 {% block content %}
+{% include "laboratory/components/lab_navbar.html" %}
 <div class="lab-layout">
-
-    {% include "laboratory/components/sidebar.html" %}
 
     <main class="lab-main">
 
@@ -40,17 +39,40 @@
                     {% for membership in memberships %}
                         <li>
                             <span class="group-member-avatar">{{ membership.user.username|first|upper }}</span>
-                            <span>{{ membership.user.username }}{% if membership.user == group.created_by %} <em>(créateur)</em>{% endif %}</span>
+                            <span>{{ membership.user.username }}{% if membership.user == group.leader %} <em class="leader-badge">chef</em>{% endif %}</span>
+                            {% if is_leader and membership.user != user and membership.user != group.leader %}
+                                <form method="post" action="{% url 'groups:remove_member' group.slug membership.user.id %}" class="group-member-remove" onsubmit="return confirm('Retirer {{ membership.user.username }} du groupe ?');">
+                                    {% csrf_token %}
+                                    <button type="submit" title="Retirer {{ membership.user.username }}" aria-label="Retirer {{ membership.user.username }}"><i data-lucide="x" style="width:15px;height:15px"></i></button>
+                                </form>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
 
-                <form method="post" action="{% url 'groups:invite_member' group.slug %}" class="group-inline-form">
-                    {% csrf_token %}
-                    <input type="text" name="username" placeholder="Nom d'utilisateur à inviter" required>
-                    <button type="submit"><i data-lucide="user-plus" style="width:16px;height:16px"></i></button>
-                </form>
-                <p class="group-hint">La personne doit déjà avoir un compte sur la plateforme. Elle recevra une notification et pourra accepter ou refuser.</p>
+                {% if is_leader %}
+                    <form method="post" action="{% url 'groups:invite_member' group.slug %}" class="group-inline-form">
+                        {% csrf_token %}
+                        <input type="email" name="email" placeholder="Adresse e-mail à inviter" required>
+                        <button type="submit"><i data-lucide="user-plus" style="width:16px;height:16px"></i></button>
+                    </form>
+                    <p class="group-hint">La personne doit déjà avoir un compte sur la plateforme. Elle recevra une notification et pourra accepter ou refuser.</p>
+
+                    <form method="post" action="{% url 'groups:transfer' group.slug %}" class="group-inline-form">
+                        {% csrf_token %}
+                        <select name="username" required>
+                            <option value="">Transmettre la direction à…</option>
+                            {% for membership in memberships %}
+                                {% if membership.user != user %}
+                                    <option value="{{ membership.user.username }}">{{ membership.user.username }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit" title="Transmettre la direction"><i data-lucide="crown" style="width:16px;height:16px"></i></button>
+                    </form>
+                {% else %}
+                    <p class="group-hint">Seul le chef du groupe ({{ group.leader.username|default:"—" }}) peut inviter de nouveaux membres.</p>
+                {% endif %}
 
                 {% if pending_invitations_sent %}
                     <div class="group-pending-invites">
@@ -62,6 +84,19 @@
                         </ul>
                     </div>
                 {% endif %}
+
+                <div class="group-danger-zone">
+                    <form method="post" action="{% url 'groups:leave' group.slug %}" onsubmit="return confirm('Quitter ce groupe ?{% if is_leader %} La direction passera au membre le plus ancien.{% endif %}');">
+                        {% csrf_token %}
+                        <button type="submit" class="group-leave-btn">Quitter le groupe</button>
+                    </form>
+                    {% if is_leader %}
+                        <form method="post" action="{% url 'groups:delete' group.slug %}" onsubmit="return confirm('Supprimer définitivement ce groupe ?');">
+                            {% csrf_token %}
+                            <button type="submit" class="group-delete-btn">Supprimer le groupe</button>
+                        </form>
+                    {% endif %}
+                </div>
             </section>
 
             <section class="group-panel">
@@ -102,9 +137,11 @@
         <section class="group-panel group-chat-panel">
             <h2><i data-lucide="message-circle" style="width:18px;height:18px;vertical-align:-3px"></i> Chat du groupe</h2>
 
-            <div class="group-chat-messages" id="groupChatMessages">
+            <div class="group-chat-messages" id="groupChatMessages"
+                 data-chat-url="{% url 'groups:messages_json' group.slug %}"
+                 data-last-id="{{ chat_messages.last.id|default:0 }}">
                 {% for message in chat_messages %}
-                    <div class="group-chat-message {% if message.sender == user %}mine{% endif %}">
+                    <div class="group-chat-message {% if message.sender == user %}mine{% endif %}" data-message-id="{{ message.id }}">
                         <span class="group-chat-sender">{{ message.sender.username }}</span>
                         <p>{{ message.content }}</p>
                         <span class="group-chat-time">{{ message.sent_at|date:"d/m H:i" }}</span>
@@ -114,7 +151,7 @@
                 {% endfor %}
             </div>
 
-            <form method="post" action="{% url 'groups:send_message' group.slug %}" class="group-chat-form">
+            <form method="post" action="{% url 'groups:send_message' group.slug %}" class="group-chat-form" id="groupChatForm">
                 {% csrf_token %}
                 <input type="text" name="content" placeholder="Écrire un message…" autocomplete="off" required>
                 <button type="submit"><i data-lucide="send" style="width:18px;height:18px"></i></button>
@@ -126,10 +163,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var chat = document.getElementById("groupChatMessages");
-        if (chat) chat.scrollTop = chat.scrollHeight;
-    });
-</script>
+<script src="{% static 'js/groups.js' %}"></script>
 {% endblock %}

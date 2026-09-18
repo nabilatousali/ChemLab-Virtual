@@ -1,0 +1,30 @@
+{
+  "name": "chemlab-platform",
+  "version": "1.0.0",
+  "description": "A virtual chemistry laboratory platform.",
+  "main": "src/main.tsx",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "keywords": [
+    "chemistry",
+    "laboratory",
+    "virtual",
+    "education"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3",
+    "vite": "^2.5.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.27.1"
+  }
+}

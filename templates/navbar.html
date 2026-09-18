@@ -1,0 +1,166 @@
+{% comment %}
+ChemLab Virtual — Navbar principale
+• Design professionnel adapté à l'identité ChemLab (navy/teal)
+• Icônes SVG intégrées (aucune dépendance externe)
+• Deux variantes : visiteur (Accueil, Catalogue, S'inscrire uniquement),
+  connectée (Expériences, Laboratoire, Paillasse, Groupes + recherche + profil).
+• Menu mobile (tiroir animé), recherche, menu profil
+Usage : navbar.html  (transparente si hero, sinon ajouter navbar_solid=True)
+{% endcomment %}
+{% load static %}
+{% with url_name=request.resolver_match.url_name app_name=request.resolver_match.app_name %}
+
+<header class="navbar{% if navbar_solid %} navbar--solid{% endif %}" id="chemlabNavbar">
+    <span class="navbar__bg" aria-hidden="true"></span>
+    <span class="navbar__progress" id="navbarProgress" aria-hidden="true"></span>
+
+    <div class="navbar__inner">
+
+        <a class="navbar__brand" href="{% url 'laboratory:home' %}">
+            <span class="navbar__brand-mark" aria-hidden="true">
+                <img src="{% static 'images/logo.svg' %}" alt="" width="34" height="34">
+            </span>
+            <span class="navbar__brand-text">ChemLab <em>Virtual</em></span>
+        </a>
+
+        <button class="navbar__burger" id="navbarBurger" type="button"
+                aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navbarNav">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="navbar__nav" id="navbarNav" aria-label="Navigation principale">
+
+            {% if user.is_authenticated %}
+            {# Navbar connectée : uniquement les fonctionnalités du laboratoire. #}
+            <ul class="navbar__list">
+                <li>
+                    <a class="navbar__link{% if url_name == 'dashboard' or url_name == 'history' %} is-active{% endif %}"
+                        href="{% url 'laboratory:dashboard' %}">Expériences</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if url_name == 'workspace' or url_name == 'laboratory' %} is-active{% endif %}"
+                        href="{% url 'laboratory:laboratory' %}">Laboratoire</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if url_name == 'bench' %} is-active{% endif %}"
+                        href="{% url 'laboratory:bench' %}">Paillasse</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if app_name == 'groups' %} is-active{% endif %}"
+                        href="{% url 'groups:list' %}"
+                        {% if app_name == 'groups' %}aria-current="page"{% endif %}>Groupes</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if url_name == 'history' %} is-active{% endif %}"
+                        href="{% url 'laboratory:history' %}"
+                        {% if url_name == 'history' %}aria-current="page"{% endif %}>Historique</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if url_name == 'profile' %} is-active{% endif %}"
+                        href="{% url 'accounts:profile' %}"
+                        {% if url_name == 'profile' %}aria-current="page"{% endif %}>Profil</a>
+                </li>
+            </ul>
+            {% else %}
+            {# Navbar visiteur : uniquement Accueil, Catalogue et inscription. #}
+            <ul class="navbar__list">
+                <li>
+                    <a class="navbar__link{% if url_name == 'home' %} is-active{% endif %}"
+                        href="{% url 'laboratory:home' %}"
+                        {% if url_name == 'home' %}aria-current="page"{% endif %}>Accueil</a>
+                </li>
+                <li>
+                    <a class="navbar__link{% if app_name == 'experiments' %} is-active{% endif %}"
+                        href="{% url 'experiments:catalogue' %}"
+                        {% if app_name == 'experiments' %}aria-current="page"{% endif %}>Catalogue</a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <div class="navbar__tools">
+
+                {% if user.is_authenticated %}
+                <div class="navbar__search" id="navbarSearch">
+                    <button class="navbar__icon-btn" id="navbarSearchToggle" type="button"
+                            aria-label="Rechercher une expérience" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </button>
+
+                    <form class="navbar__search-field" id="navbarSearchField" role="search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                        <input type="search" id="navbarSearchInput" autocomplete="off"
+                               placeholder="Rechercher une expérience…"
+                               aria-label="Rechercher une expérience"
+                               data-catalogue-url="{% url 'experiments:catalogue' %}">
+                        <button class="navbar__search-clear" id="navbarSearchClear" type="button" aria-label="Effacer la recherche">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                    {% if pending_invitations_count %}
+                        <a class="navbar__icon-btn navbar__bell" href="{% url 'groups:list' %}"
+                           title="Invitations en attente" aria-label="Invitations en attente">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+                            </svg>
+                            <span class="navbar__badge">{{ pending_invitations_count }}</span>
+                        </a>
+                    {% endif %}
+
+                    <div class="navbar__user" id="navbarUser">
+                        <button class="navbar__user-toggle" id="navbarUserToggle" type="button"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="navbar__avatar">{{ user.username|first|upper }}</span>
+                            <span class="navbar__user-name">{{ user.first_name|default:user.username }}</span>
+                            <svg class="navbar__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+
+                        <div class="navbar__dropdown" id="navbarUserMenu">
+                            <div class="navbar__dropdown-head">
+                                <strong>{{ user.first_name|default:user.username }}</strong>
+                                <small>{{ user.email|default:"Membre ChemLab" }}</small>
+                            </div>
+                            <a href="{% url 'accounts:profile' %}">Mon profil</a>
+                            <a href="{% url 'laboratory:dashboard' %}">Mes expériences</a>
+                            <a href="{% url 'laboratory:bench' %}">Paillasse libre</a>
+                            <a href="{% url 'laboratory:history' %}">Historique</a>
+                            <form method="post" action="{% url 'accounts:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="navbar__logout">Se déconnecter</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="navbar__btn navbar__btn--primary" href="{% url 'accounts:register' %}">S'inscrire</a>
+                {% endif %}
+
+            </div>
+        </nav>
+
+    </div>
+</header>
+
+{% if navbar_solid %}<div class="navbar__spacer" aria-hidden="true"></div>{% endif %}
+<div class="navbar__overlay" id="navbarOverlay" aria-hidden="true"></div>
+
+{% endwith %}

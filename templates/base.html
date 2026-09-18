@@ -15,9 +15,18 @@
             ChemLab Virtual
         {% endblock %}
     </title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/logo.svg' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    >
 
     {% block extra_css %}
     {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
 <body>
@@ -26,7 +35,9 @@
     {% endblock %}
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-    lucide.createIcons();
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 </script>
     {% block extra_js %}
     {% endblock %}

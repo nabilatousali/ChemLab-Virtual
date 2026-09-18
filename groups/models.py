@@ -15,6 +15,14 @@ class Group(models.Model):
         on_delete=models.CASCADE,
         related_name="created_groups",
     )
+    leader = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="led_groups",
+        help_text="Chef du groupe : invitations, retraits, transfert et suppression.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

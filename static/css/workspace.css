@@ -1,10 +1,10 @@
 /* ---------- Palette (reprise du projet) ---------- */
 :root {
-    --lab-blue: #2563EB;
-    --lab-blue-dark: #1E3A8A;
-    --lab-blue-light: #DBEAFE;
+    --lab-blue: #15999d;
+    --lab-blue-dark: #102e49;
+    --lab-blue-light: #e6f6f5;
     --lab-white: #FFFFFF;
-    --lab-grey: #F8FAFC;
+    --lab-grey: #f6f9fc;
 }
 
 /* ---------- Titre + statut ---------- */
@@ -50,9 +50,44 @@
     align-items: start;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1240px) {
     .workspace-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .protocol-panel {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 820px) {
+    .workspace-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .workbench {
+        min-height: 320px;
+    }
+
+    .workbench-surface {
+        min-height: 280px;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .workspace-panel,
+    .protocol-panel {
+        padding: 14px;
+    }
+
+    .results-bar {
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .result-item {
+        min-width: 0;
     }
 }
 
@@ -75,7 +110,7 @@
     justify-content: space-between;
     align-items: center;
     background: var(--lab-grey);
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e2edef;
     border-radius: 10px;
     padding: 12px 14px;
     font-weight: 600;
@@ -114,7 +149,7 @@
     align-items: center;
     gap: 10px;
     background: var(--lab-white);
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e2edef;
     border-radius: 8px;
     padding: 8px 10px;
     cursor: pointer;
@@ -147,13 +182,13 @@
 
 .dropdown-empty {
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: #93a5ae;
     padding: 6px 4px;
 }
 
 .workspace-hint {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: #93a5ae;
     margin-top: 8px;
     line-height: 1.5;
 }
@@ -172,7 +207,9 @@
 
 .workbench-surface {
     flex: 1;
-    background: var(--lab-grey);
+    background:
+        linear-gradient(rgba(246, 249, 252, 0.55), rgba(246, 249, 252, 0.55)),
+        url("../images/photo.jpg") center / cover no-repeat;
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
@@ -185,7 +222,7 @@
 
 .workbench-placeholder {
     margin: auto;
-    color: #94a3b8;
+    color: #93a5ae;
     font-size: 0.95rem;
     text-align: center;
 }
@@ -265,7 +302,7 @@
     flex-direction: column-reverse;
     overflow: hidden;
     position: relative;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #d5e3e7;
 }
 
 .container-icon-fallback {
@@ -289,7 +326,7 @@
 
 .container-contents {
     font-size: 0.68rem;
-    color: #64748b;
+    color: #718792;
     text-align: center;
     line-height: 1.3;
 }
@@ -349,7 +386,7 @@
 .protocol-steps p {
     margin: 0;
     font-size: 0.85rem;
-    color: #475569;
+    color: #24455b;
 }
 
 .progress-block {
@@ -360,7 +397,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: #64748b;
+    color: #718792;
     margin-bottom: 6px;
 }
 
@@ -396,7 +433,7 @@
 }
 
 .start-button:disabled {
-    background: #94a3b8;
+    background: #93a5ae;
     cursor: not-allowed;
 }
 
@@ -436,7 +473,7 @@
 .result-item p {
     margin: 0;
     font-size: 0.8rem;
-    color: #64748b;
+    color: #718792;
 }
 
 .result-item strong {
@@ -449,7 +486,7 @@
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #d5e3e7;
     vertical-align: middle;
 }
 
@@ -486,7 +523,7 @@
 .volume-modal p {
     margin: 0 0 16px;
     font-size: 0.85rem;
-    color: #64748b;
+    color: #718792;
 }
 
 .volume-modal label {
@@ -500,7 +537,7 @@
 .volume-modal input[type="number"] {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #d5e3e7;
     border-radius: 8px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -532,7 +569,7 @@
 
 .volume-btn-secondary {
     background: var(--lab-grey);
-    color: #475569;
+    color: #24455b;
 }
 
 .volume-btn-primary {
@@ -573,7 +610,7 @@
     align-items: center;
     gap: 10px;
     font-size: 0.88rem;
-    color: #334155;
+    color: #24455b;
 }
 
 .feedback-item.correct .feedback-icon {
@@ -584,8 +621,90 @@
     color: #dc2626;
 }
 
+/* ---------- Composition du mélange (laboratoire libre) ---------- */
+.feedback-item.mixed .feedback-icon {
+    color: #15999d;
+}
+
+.feedback-warning {
+    font-size: 0.85rem;
+    color: #92400e;
+}
+
 .feedback-icon {
     display: flex;
     align-items: center;
     flex-shrink: 0;
+}
+
+/* ---------- Alertes de sécurité (laboratoire libre) ---------- */
+.hazard-chip {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-left: auto;
+    color: #b91c1c;
+}
+
+.safety-modal h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b91c1c;
+}
+
+.safety-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+}
+
+.safety-chips:empty {
+    display: none;
+}
+
+.safety-chip {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1.5px solid;
+    border-radius: 999px;
+    padding: 3px 12px;
+}
+
+.safety-chip.danger {
+    color: #b91c1c;
+    border-color: #fca5a5;
+    background: #fef2f2;
+}
+
+.safety-chip.warning {
+    color: #92400e;
+    border-color: #fcd34d;
+    background: #fffbeb;
+}
+
+.safety-incompatibility {
+    color: #b91c1c;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.safety-panel ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.safety-panel ul:empty {
+    display: none;
+}
+
+.safety-advice-item {
+    font-size: 0.88rem;
+    color: #24455b;
 }

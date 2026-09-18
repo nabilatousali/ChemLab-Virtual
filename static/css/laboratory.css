@@ -5,9 +5,10 @@
 .lab-layout {
     display: flex;
     min-height: 100vh;
-    padding-left: 245px;
+    padding-left: 0;
     color: #102e49;
-    background: #f3f8fa;
+    background: #f6f9fc;
+    transition: padding-left .32s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ---- Sidebar fixe ---- */
@@ -22,10 +23,13 @@
     width: 245px;
     height: 100vh;
     overflow-y: auto;
-    padding: 32px 14px;
+    padding: 30px 14px 18px;
     color: #ffffff;
-    background: linear-gradient(180deg, #071c31 0%, #061c32 100%);
+    background:
+        linear-gradient(180deg, #09223c 0%, #061b30 100%);
     box-shadow: 4px 0 24px rgba(6, 28, 50, 0.18);
+    transition: width .32s cubic-bezier(0.4, 0, 0.2, 1),
+                padding .32s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .lab-sidebar::-webkit-scrollbar {
@@ -41,7 +45,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 12px 45px;
+    margin: 0;
     color: #ffffff;
     font-size: 18px;
     font-weight: 700;
@@ -67,18 +71,145 @@
     font-size: 22px;
 }
 
+/* ---- En-tête de la sidebar : marque + bouton de repli ---- */
+.lab-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 6px 26px;
+}
+
+.lab-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: #65ded5;
+    border: 1px solid rgba(101, 222, 213, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: color .2s ease, background .2s ease,
+                border-color .2s ease, transform .2s ease;
+}
+
+.lab-sidebar-toggle:hover {
+    color: #ffffff;
+    background: rgba(101, 222, 213, 0.16);
+    border-color: rgba(101, 222, 213, 0.6);
+    transform: translateY(-1px);
+}
+
+.lab-sidebar-toggle i:last-child {
+    display: none;
+}
+
+body.sidebar-collapsed .lab-sidebar-toggle i:first-child {
+    display: none;
+}
+
+body.sidebar-collapsed .lab-sidebar-toggle i:last-child {
+    display: block;
+}
+
+/* ---- Sidebar repliée (classe posée sur <body>) ---- */
+body.sidebar-collapsed .lab-layout {
+    padding-left: 78px;
+}
+
+body.sidebar-collapsed .lab-sidebar {
+    width: 78px;
+    padding: 26px 8px 16px;
+}
+
+body.sidebar-collapsed .lab-sidebar-head {
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 26px;
+}
+
+body.sidebar-collapsed .lab-brand {
+    justify-content: center;
+}
+
+body.sidebar-collapsed .lab-brand-text,
+body.sidebar-collapsed .lab-nav-section,
+body.sidebar-collapsed .nav-label {
+    display: none;
+}
+
+body.sidebar-collapsed .lab-navigation {
+    align-items: center;
+}
+
+body.sidebar-collapsed .lab-navigation-link {
+    justify-content: center;
+    gap: 0;
+    padding: 13px;
+}
+
+body.sidebar-collapsed .lab-navigation-link:hover {
+    transform: none;
+}
+
+body.sidebar-collapsed .nav-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    margin-left: 0;
+    padding: 0 4px;
+    font-size: 10px;
+}
+
+body.sidebar-collapsed .lab-sidebar-bottom {
+    align-items: center;
+}
+
+body.sidebar-collapsed .lab-user-card {
+    justify-content: center;
+    padding: 6px 0;
+}
+
+body.sidebar-collapsed .lab-user-meta {
+    display: none;
+}
+
+body.sidebar-collapsed .lab-logout-button {
+    padding: 12px 0;
+}
+
 .lab-navigation {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 6px;
+    padding-top: 4px;
+}
+
+/* Regroupement des entrées par section (look « application ») */
+.lab-nav-section {
+    margin: 18px 12px 8px;
+    color: rgba(157, 182, 193, 0.6);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
 }
 
 .lab-navigation-link {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 13px 16px;
+    padding: 12px 15px;
     color: #9db6c1;
+    border: 1px solid transparent;
     border-radius: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -86,50 +217,120 @@
     transition:
         color 0.2s ease,
         background 0.2s ease,
-        transform 0.15s ease;
+        border-color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
 }
 
-.lab-navigation-link:hover,
+.lab-navigation-link:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(3px);
+}
+
 .lab-navigation-link.active {
     color: #ffffff;
-    background: linear-gradient(90deg, #0c5874, #0e6a7e);
-}
-
-.lab-navigation-link.active {
-    box-shadow: inset 3px 0 0 #65ded5;
+    font-weight: 600;
+    border-color: rgba(101, 222, 213, 0.35);
+    background: linear-gradient(135deg, #1ba9ab 0%, #15999d 100%);
+    box-shadow:
+        inset 3px 0 0 rgba(255, 255, 255, 0.8),
+        0 8px 20px rgba(21, 153, 157, 0.35);
 }
 
 .nav-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 23px;
+    width: 22px;
     flex-shrink: 0;
     color: #65ded5;
     font-size: 18px;
     text-align: center;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.lab-sidebar-bottom {
-    position: relative;
-    margin-top: auto;
+.lab-navigation-link:hover .nav-icon {
+    color: #ffffff;
 }
 
-.sidebar-badge {
-    position: absolute;
-    top: -14px;
-    right: 8px;
+.lab-navigation-link.active .nav-icon {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Compteur d'invitations placé sur l'entrée « Groupes » */
+.nav-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 20px;
     height: 20px;
+    margin-left: auto;
     padding: 0 6px;
     color: #ffffff;
     border-radius: 999px;
     background: #ef4444;
     font-size: 11px;
     font-weight: 700;
+}
+
+/* ---- Pied de la sidebar : carte utilisateur + déconnexion ---- */
+.lab-sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid rgba(157, 182, 193, 0.18);
+}
+
+.lab-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 8px 6px;
+}
+
+.lab-user-avatar {
+    display: flex;
+    flex: 0 0 38px;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    color: #ffffff;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #25bdbb, #1a8f9c);
+    box-shadow: 0 4px 12px rgba(37, 189, 187, 0.35);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.lab-user-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.lab-user-meta strong {
+    color: #ffffff;
+    overflow: hidden;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lab-user-meta small {
+    color: #9db6c1;
+    overflow: hidden;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .lab-logout-form {
@@ -142,11 +343,12 @@
     justify-content: center;
     gap: 10px;
     width: 100%;
-    padding: 12px;
+    padding: 11px;
     color: #9db6c1;
-    border: 1px solid rgba(157, 182, 193, 0.25);
-    border-radius: 10px;
+    border: 1px solid rgba(157, 182, 193, 0.22);
+    border-radius: 12px;
     background: transparent;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -169,12 +371,12 @@
     justify-content: space-between;
     gap: 30px;
     padding-bottom: 25px;
-    border-bottom: 1px solid #dfe9ec;
+    border-bottom: 1px solid #e2edef;
 }
 
 .lab-breadcrumb {
     margin: 0 0 20px;
-    color: #22aaa9;
+    color: #15999d;
     font-size: 13px;
 }
 
@@ -187,14 +389,14 @@
 
 .lab-header-description {
     margin: 14px 0 0;
-    color: #758e99;
+    color: #718792;
 }
 
 .lab-user {
     display: flex;
     align-items: center;
     gap: 15px;
-    color: #758e99;
+    color: #718792;
     white-space: nowrap;
 }
 
@@ -210,23 +412,24 @@
     height: 44px;
     color: #ffffff;
     border-radius: 50%;
-    background: #1d9fa2;
+    background: #15999d;
     font-weight: 700;
 }
 
 .experiment-catalogue {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 22px;
-    padding-top: 35px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+    padding-top: 28px;
 }
 
 .experiment-card {
-    padding: 27px;
+    padding: 22px;
     border: 1px solid #e2edef;
     border-radius: 18px;
     background: #ffffff;
     box-shadow: 0 14px 35px rgba(16, 46, 73, 0.06);
+    overflow: hidden;
 }
 
 .experiment-card-top,
@@ -235,6 +438,20 @@
     align-items: center;
     justify-content: space-between;
     gap: 15px;
+}
+
+.experiment-card-cover {
+    display: block;
+    width: 100%;
+    height: 100px;
+    margin: 18px 0 4px;
+    border-radius: 12px;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.experiment-card:hover .experiment-card-cover {
+    transform: scale(1.03);
 }
 
 .experiment-status {
@@ -246,21 +463,8 @@
 }
 
 .experiment-duration {
-    color: #758e99;
+    color: #718792;
     font-size: 12px;
-}
-
-.experiment-card-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 66px;
-    height: 66px;
-    margin: 28px 0 20px;
-    color: #ffffff;
-    border-radius: 18px;
-    background: #39c4c0;
-    font-size: 32px;
 }
 
 .experiment-card h2 {
@@ -271,15 +475,15 @@
 
 .experiment-card p {
     min-height: 50px;
-    color: #758e99;
+    color: #718792;
     line-height: 1.65;
 }
 
 .experiment-card-footer {
     margin-top: 25px;
     padding-top: 18px;
-    border-top: 1px solid #e6eef0;
-    color: #758e99;
+    border-top: 1px solid #eef4f5;
+    color: #718792;
     font-size: 12px;
 }
 
@@ -302,9 +506,9 @@
     align-items: center;
     gap: 8px;
     padding: 9px 14px;
-    color: #168c8c;
+    color: #0f766e;
     border-radius: 30px;
-    background: #ddf7f5;
+    background: #e6f6f5;
     font-size: 12px;
     font-weight: 700;
 }
@@ -375,9 +579,9 @@
     justify-content: center;
     width: 35px;
     height: 35px;
-    color: #23adae;
+    color: #15999d;
     border-radius: 8px;
-    background: #e9f8f7;
+    background: #e6f6f5;
 }
 
 .material-help {
@@ -601,7 +805,7 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    color: #20aaa7;
+    color: #15999d;
     border-radius: 50%;
     background: #e8f8f7;
     font-size: 18px;
@@ -614,13 +818,13 @@
 }
 
 .result-item small {
-    color: #758e99;
+    color: #718792;
     font-size: 12px;
 }
 
 .result-item strong {
     margin-top: 3px;
-    color: #20aaa7;
+    color: #15999d;
     font-size: 27px;
 }
 
@@ -640,12 +844,21 @@
 
     .lab-sidebar {
         width: 78px;
-        padding: 24px 10px;
+        padding: 24px 8px 16px;
+    }
+
+    .lab-sidebar-toggle {
+        display: none;
+    }
+
+    .lab-sidebar-head {
+        justify-content: center;
+        margin: 0 0 26px;
     }
 
     .lab-brand {
         justify-content: center;
-        margin: 0 0 32px;
+        margin: 0;
     }
 
     .lab-brand-text {
@@ -654,6 +867,12 @@
 
     .lab-navigation {
         align-items: center;
+        gap: 6px;
+        padding-top: 0;
+    }
+
+    .lab-nav-section {
+        display: none;
     }
 
     .lab-navigation-link {
@@ -662,7 +881,38 @@
         padding: 13px;
     }
 
+    .lab-navigation-link:hover {
+        transform: none;
+    }
+
     .nav-label {
+        display: none;
+    }
+
+    /* Compteur d'invitations en pastille dans le rail d'icônes */
+    .nav-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        min-width: 16px;
+        height: 16px;
+        margin-left: 0;
+        padding: 0 4px;
+        font-size: 10px;
+    }
+
+    .lab-sidebar-bottom {
+        align-items: center;
+        padding-top: 14px;
+        border-top: 1px solid rgba(157, 182, 193, 0.18);
+    }
+
+    .lab-user-card {
+        justify-content: center;
+        padding: 6px 0;
+    }
+
+    .lab-user-meta {
         display: none;
     }
 
@@ -699,9 +949,34 @@
         box-shadow: 0 2px 14px rgba(6, 28, 50, 0.25);
     }
 
+    .lab-sidebar-toggle {
+        display: none;
+    }
+
+    .lab-sidebar-head {
+        justify-content: center;
+        margin: 0 6px 0 0;
+        flex-shrink: 0;
+    }
+
     .lab-brand {
         margin: 0 6px 0 0;
         flex-shrink: 0;
+    }
+
+    /* En barre supérieure, le repli n'a pas lieu d'être */
+    body.sidebar-collapsed .lab-layout {
+        padding-left: 0;
+    }
+
+    body.sidebar-collapsed .lab-sidebar {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    body.sidebar-collapsed .lab-sidebar-head {
+        flex-direction: row;
+        margin: 0 6px 0 0;
     }
 
     .lab-brand-symbol {
@@ -726,16 +1001,29 @@
     .lab-navigation-link {
         flex: 1;
         min-width: 40px;
+        justify-content: center;
+        gap: 0;
         padding: 9px 6px;
     }
 
+    .lab-navigation-link:hover {
+        transform: none;
+    }
+
     .lab-navigation-link.active {
-        box-shadow: inset 0 -3px 0 #65ded5;
+        box-shadow: none;
     }
 
     .lab-sidebar-bottom {
         flex-shrink: 0;
+        gap: 0;
         margin: 0 0 0 6px;
+        padding: 0;
+        border-top: none;
+    }
+
+    .lab-user-card {
+        display: none;
     }
 
     .lab-logout-button {
@@ -743,9 +1031,9 @@
         padding: 9px;
     }
 
-    .sidebar-badge {
-        top: -8px;
-        right: -2px;
+    .nav-badge {
+        top: 6px;
+        right: 2px;
     }
 
     .lab-main {
@@ -761,7 +1049,11 @@
         gap: 14px;
     }
 
-    .experiment-catalogue,
+    .experiment-catalogue {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
     .experiment-workspace,
     .result-bar {
         grid-template-columns: 1fr;
@@ -778,5 +1070,76 @@
 
     .result-bar {
         gap: 18px;
+    }
+}
+
+/* ---------- État vide partagé (ex : .dropdown-empty) ---------- */
+.dropdown-empty {
+    padding: 10px 8px;
+    color: #93a5ae;
+    font-size: 0.88rem;
+}
+
+/* =========================================================
+   Ajustements responsive complémentaires
+   ========================================================= */
+@media (max-width: 720px) {
+    .lab-navigation {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .lab-navigation::-webkit-scrollbar {
+        display: none;
+    }
+
+    .lab-navigation-link {
+        min-width: 36px;
+        padding: 9px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lab-main {
+        padding: 18px 12px;
+    }
+
+    .experiment-catalogue {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .experiment-card {
+        padding: 20px;
+    }
+
+    .experiment-card-cover {
+        height: 80px;
+        margin-top: 14px;
+    }
+}
+
+/* =========================================================
+   Navbar principale au-dessus de l'interface du laboratoire
+   ========================================================= */
+:root {
+    --lab-navbar-h: 56px;
+}
+
+.lab-layout {
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-top: var(--lab-navbar-h);
+}
+
+.lab-main {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+    .lab-layout {
+        padding-top: var(--lab-navbar-h);
     }
 }

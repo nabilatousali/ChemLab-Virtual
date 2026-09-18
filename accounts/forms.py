@@ -97,6 +97,8 @@ class RegisterForm(forms.ModelForm):
         user = super().save(commit=False)
 
         user.email = user.email.lower()
+        # Le compte reste inactif jusqu'au clic sur le lien d'activation.
+        user.is_active = False
         user.set_password(self.cleaned_data["password"])
 
         if commit:
@@ -128,6 +130,12 @@ class LoginForm(forms.Form):
         ),
     )
 
+    def __init__(self, *args, request=None, **kwargs):
+        # La requête est transmise à authenticate() pour qu'axes
+        # puisse attribuer chaque tentative (compte + IP).
+        self.request = request
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -149,18 +157,19 @@ class LoginForm(forms.Form):
                 )
 
             self.user = authenticate(
+                self.request,
                 username=user_by_email.username,
                 password=password,
             )
 
             if self.user is None:
+                if not user_by_email.is_active:
+                    raise forms.ValidationError(
+                        "Ce compte n'est pas encore activé. "
+                        "Vérifiez votre boîte e-mail."
+                    )
                 raise forms.ValidationError(
                     "Adresse e-mail ou mot de passe incorrect."
-                )
-
-            if not self.user.is_active:
-                raise forms.ValidationError(
-                    "Ce compte est désactivé."
                 )
 
         return cleaned_data

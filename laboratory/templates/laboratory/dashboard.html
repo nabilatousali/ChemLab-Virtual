@@ -14,9 +14,9 @@
 
 {% block content %}
 
-<div class="lab-layout">
+{% include "laboratory/components/lab_navbar.html" %}
 
-    {% include "laboratory/components/sidebar.html" %}
+<div class="lab-layout">
 
     <main class="lab-main">
 
@@ -72,9 +72,9 @@
                         </span>
                     </div>
 
-                    <div class="experiment-card-icon">
-                        ⚗
-                    </div>
+                    <img class="experiment-card-cover"
+                         src="{{ experiment.cover_image }}"
+                         alt="{{ experiment.title }}" loading="lazy">
 
                     <h2>
                         {{ experiment.title }}

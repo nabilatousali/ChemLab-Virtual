@@ -4,7 +4,7 @@ Un visiteur (utilisateur non connecté) n'a accès qu'à :
     - la page d'accueil,
     - le catalogue des expériences,
     - la fiche détaillée d'une expérience,
-    - les pages de connexion / inscription,
+    - les pages de connexion / inscription / activation,
     - l'interface d'administration (accès staff),
     - les fichiers statiques et médias.
 
@@ -36,6 +36,7 @@ PUBLIC_URL_NAMES = {
     "detail",
     "login",
     "register",
+    "activate",
 }
 
 

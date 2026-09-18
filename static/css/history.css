@@ -45,7 +45,7 @@
     height: 12px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: #cbd5e1;
+    background: #d5e3e7;
     transition: transform 0.2s ease;
 }
 
@@ -126,4 +126,33 @@
     color: #93a5ae;
     font-size: 14px;
     text-align: center;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 720px) {
+    .history-panel {
+        padding: 10px 16px;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 560px) {
+    .history-list li {
+        flex-wrap: wrap;
+        row-gap: 10px;
+        padding: 14px 8px;
+    }
+
+    .history-cell {
+        flex: 1 1 190px;
+    }
+
+    .history-score {
+        margin-left: 28px;
+    }
+
+    .history-retry {
+        margin-left: auto;
+    }
 }

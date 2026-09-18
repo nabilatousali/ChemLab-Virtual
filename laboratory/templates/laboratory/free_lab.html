@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Laboratoire libre — ChemLab Virtual
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/workspace.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% include "laboratory/components/lab_navbar.html" %}
+
+<div class="lab-layout">
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">
+                    <a href="{% url 'laboratory:dashboard' %}">Mes expériences</a> / Laboratoire libre
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>
+                    Bonjour,
+                    <strong>
+                        {% if user.is_authenticated %}
+                            {{ user.first_name|default:user.username }}
+                        {% else %}
+                            Visiteur
+                        {% endif %}
+                    </strong>
+                </span>
+                <div class="lab-avatar">
+                    {% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}V{% endif %}
+                </div>
+            </div>
+        </header>
+
+        <div class="workspace-title-row">
+            <h1>Laboratoire libre</h1>
+            <span class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                Prêt à commencer
+            </span>
+        </div>
+
+        <div class="workspace-grid">
+
+            <aside class="workspace-panel">
+
+                <div class="dropdown-group">
+                    <button class="dropdown-toggle" data-target="materialMenu" type="button">
+                        <i data-lucide="flask-conical" style="width:16px;height:16px"></i> Matériel <span class="chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="materialMenu">
+                        {% for material in materials %}
+                            <button class="dropdown-item" type="button"
+                                    data-type="material"
+                                    data-name="{{ material.name }}"
+                                    data-icon="{% if material.icon %}{{ material.icon.url }}{% endif %}">
+                                {% if material.icon %}
+                                    <img src="{{ material.icon.url }}" alt="">
+                                {% else %}
+                                    <span class="dropdown-item-fallback"><i data-lucide="flask-conical" style="width:16px;height:16px"></i></span>
+                                {% endif %}
+                                {{ material.name }}
+                            </button>
+                        {% empty %}
+                            <p class="dropdown-empty">Aucun matériel disponible sur la plateforme.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <p class="workspace-hint">
+                    1. Choisissez un matériel pour créer un récipient.<br>
+                    2. Cliquez sur ce récipient pour le sélectionner.<br>
+                    3. Versez librement les réactifs de votre choix.
+                </p>
+            </aside>
+
+            <div class="workbench">
+                <div class="workbench-surface" id="workbenchSurface">
+                    <p class="workbench-placeholder" id="workbenchPlaceholder">
+                        La paillasse est vide — ajoutez un matériel pour commencer.
+                    </p>
+                </div>
+                <div class="workbench-controls">
+                    <button type="button" id="resetBench" title="Réinitialiser la paillasse">
+                        <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="protocol-panel">
+                <h2><i data-lucide="test-tube-2" style="width:18px;height:18px;vertical-align:-3px"></i> Réactifs</h2>
+
+                <div class="dropdown-group">
+                    <button class="dropdown-toggle" data-target="reagentMenu" type="button">
+                        Choisir un réactif <span class="chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="reagentMenu">
+                        {% for reagent in reagents %}
+                            <button class="dropdown-item" type="button"
+                                    data-type="reagent"
+                                    data-name="{{ reagent.name }}"
+                                    data-color="{{ reagent.color|default:'#3498db' }}"
+                                    data-hazards="{{ reagent.hazards }}"
+                                    data-advice="{{ reagent.safety_advice|escape }}"
+                                    data-incompatible="{% for other in reagent.incompatible_with.all %}{{ other.name }}|{% endfor %}">
+                                <span class="reagent-swatch" style="background:{{ reagent.color|default:'#3498db' }}"></span>
+                                {{ reagent.name }}
+                                {% if reagent.hazards %}
+                                    <span class="hazard-chip" title="Réactif dangereux : {{ reagent.hazards }}"><i data-lucide="triangle-alert" style="width:14px;height:14px"></i></span>
+                                {% endif %}
+                            </button>
+                        {% empty %}
+                            <p class="dropdown-empty">Aucun réactif disponible sur la plateforme.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="dropdown-group">
+                    <button class="dropdown-toggle" data-target="benchMenu" type="button">
+                        <i data-lucide="test-tube" style="width:16px;height:16px"></i> Ma paillasse <span class="chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="benchMenu">
+                        {% for item in bench_reagents %}
+                            <button class="dropdown-item" type="button"
+                                    data-type="reagent"
+                                    data-name="{{ item.name }}"
+                                    data-color="{{ item.color|default:'#3498db' }}"
+                                    data-hazards="{{ item.hazards }}"
+                                    data-advice=""
+                                    data-incompatible="">
+                                <span class="reagent-swatch" style="background:{{ item.color|default:'#3498db' }}"></span>
+                                {{ item.name }}
+                                {% if item.hazards %}
+                                    <span class="hazard-chip" title="Réactif dangereux : {{ item.hazards }}"><i data-lucide="triangle-alert" style="width:14px;height:14px"></i></span>
+                                {% endif %}
+                            </button>
+                        {% empty %}
+                            <p class="dropdown-empty">Votre paillasse est vide. Ajoutez des composés depuis l'onglet Paillasse.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <p class="workspace-hint">
+                    Tous les réactifs de la plateforme sont disponibles.
+                    Aucun protocole imposé : mélangez ce que vous voulez,
+                    puis analysez le résultat.
+                </p>
+
+                {% csrf_token %}
+                <button type="button" class="start-button" id="analyzeMixture"
+                        data-submit-url="{% url 'laboratory:analyze_mixture' %}">
+                    <i data-lucide="play" style="width:16px;height:16px;vertical-align:-2px"></i> Analyser le mélange
+                </button>
+
+                <p class="workspace-hint">
+                    Le pH affiché est une estimation pédagogique.
+                </p>
+            </aside>
+
+        </div>
+
+        <section class="results-bar">
+            <div class="result-item">
+                <div class="result-icon">Vo</div>
+                <div>
+                    <p>Volume total</p>
+                    <strong data-indicator-result data-indicator-id="volume" data-default="— mL">— mL</strong>
+                </div>
+            </div>
+            <div class="result-item">
+                <div class="result-icon">Co</div>
+                <div>
+                    <p>Couleur du mélange</p>
+                    <strong data-indicator-result data-indicator-id="color" data-default="—">—</strong>
+                </div>
+            </div>
+            <div class="result-item">
+                <div class="result-icon">pH</div>
+                <div>
+                    <p>pH estimé</p>
+                    <strong data-indicator-result data-indicator-id="ph" data-default="—">—</strong>
+                </div>
+            </div>
+            <div class="result-item">
+                <div class="result-icon">Ré</div>
+                <div>
+                    <p>Réactifs mélangés</p>
+                    <strong data-indicator-result data-indicator-id="count" data-default="—">—</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="feedback-panel" id="resultFeedback" style="display:none;">
+            <h3>Composition du mélange</h3>
+            <ul id="feedbackList"></ul>
+        </section>
+
+        <section class="feedback-panel safety-panel" id="safetyPanel" style="display:none;">
+            <h3><i data-lucide="shield-alert" style="width:18px;height:18px;vertical-align:-3px"></i> Sécurité du mélange</h3>
+            <div class="safety-chips" id="safetyChips"></div>
+            <ul id="safetyWarnings"></ul>
+            <ul id="safetyAdvice"></ul>
+        </section>
+
+    </main>
+
+</div>
+
+<!-- Alerte de sécurité avant versement d'un réactif dangereux -->
+<div class="volume-modal-overlay" id="safetyModalOverlay">
+    <div class="volume-modal safety-modal">
+        <h3><i data-lucide="triangle-alert" style="width:20px;height:20px;vertical-align:-3px"></i> Attention : <span id="safetyModalReagent">réactif dangereux</span></h3>
+        <div class="safety-chips" id="safetyModalChips"></div>
+        <p id="safetyModalAdvice"></p>
+        <p class="safety-incompatibility" id="safetyModalIncompatible" style="display:none;"></p>
+
+        <div class="volume-modal-actions">
+            <button type="button" id="safetyCancel" class="volume-btn-secondary">Annuler</button>
+            <button type="button" id="safetyConfirm" class="volume-btn-primary">Verser quand même</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fenêtre de saisie du volume versé -->
+<div class="volume-modal-overlay" id="volumeModalOverlay">
+    <div class="volume-modal">
+        <h3>Verser <span id="volumeModalReagent">un réactif</span></h3>
+        <p>Dans : <strong id="volumeModalContainer">—</strong></p>
+
+        <label for="volumeInput">Volume à verser (mL)</label>
+        <input type="number" id="volumeInput" min="0" step="0.1" placeholder="Ex : 10">
+        <p class="volume-modal-error" id="volumeModalError"></p>
+
+        <div class="volume-modal-actions">
+            <button type="button" id="volumeCancel" class="volume-btn-secondary">Annuler</button>
+            <button type="button" id="volumeConfirm" class="volume-btn-primary">Verser</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {{ ghs_labels|json_script:"ghs-labels" }}
+    <script src="{% static 'js/free_lab.js' %}"></script>
+{% endblock %}

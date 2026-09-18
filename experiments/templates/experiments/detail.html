@@ -10,30 +10,21 @@
           href="{% static 'css/catalogue.css' %}">
     <link rel="stylesheet"
           href="{% static 'css/experiment-detail.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/navbar.css' %}">
 {% endblock %}
 
 {% block content %}
 
-<header class="catalogue-header">
-    <div class="container nav-inner">
-        <a href="{% url 'laboratory:home' %}" class="logo">
-            ChemLab <span>Virtual</span>
-        </a>
-    </div>
-</header>
+{% include "navbar.html" with navbar_solid=True %}
 
 <main class="detail-page">
 
     <article class="container detail-card">
 
         <div class="detail-image">
-            {% if experiment.image %}
-                <img src="{{ experiment.image.url }}"
-                     alt="{{ experiment.title }}">
-            {% else %}
-                <img src="{% static 'images/chemlab-experiments.jpg' %}"
-                     alt="{{ experiment.title }}">
-            {% endif %}
+            <img src="{{ experiment.cover_image }}"
+                 alt="{{ experiment.title }}">
         </div>
 
         <div class="detail-content">
@@ -86,4 +77,8 @@
 
 </main>
 
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/navbar.js' %}"></script>
 {% endblock %}

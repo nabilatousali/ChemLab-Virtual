@@ -1,0 +1,379 @@
+/* =========================================================
+   CHEMLAB VIRTUAL — PAILLASSE LIBRE (PubChem)
+   ========================================================= */
+
+.bench-panel {
+    background: #ffffff;
+    border: 1px solid #e2edef;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.bench-panel h2 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+    color: var(--lab-blue-dark, #102e49);
+}
+
+.bench-subtitle {
+    margin: 0 0 18px;
+    color: #718792;
+    font-size: 0.95rem;
+}
+
+.bench-stock-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.bench-stock-title h2 {
+    margin-bottom: 0;
+}
+
+.bench-count {
+    background: #e6f6f5;
+    color: #102e49;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 999px;
+}
+
+/* ---------- Messages flash ---------- */
+.bench-messages {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.bench-messages li {
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+}
+
+.bench-success {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.bench-error {
+    background: #fff4f4;
+    color: #9b2c2c;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+}
+
+/* ---------- Recherche ---------- */
+.bench-search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.bench-search-form input[type="text"] {
+    flex: 1;
+    min-width: 260px;
+    padding: 12px 16px;
+    border: 1px solid #d5e3e7;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #102e49;
+    background: #f6f9fc;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bench-search-form input[type="text"]:focus {
+    border-color: #25bdbb;
+    box-shadow: 0 0 0 3px rgba(37, 189, 187, 0.18);
+    background: #ffffff;
+}
+
+.bench-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.bench-btn:active {
+    transform: translateY(1px);
+}
+
+.bench-btn-primary {
+    background: #25bdbb;
+    color: #ffffff;
+}
+
+.bench-btn-primary:hover {
+    background: #15999d;
+}
+
+.bench-btn-add {
+    background: #e6f6f5;
+    color: #0f766e;
+    padding: 9px 16px;
+    white-space: nowrap;
+}
+
+.bench-btn-add:hover {
+    background: #d7f1f0;
+}
+
+/* ---------- Candidats (résultat de recherche) ---------- */
+.bench-candidate-list,
+.bench-reagent-list {
+    display: grid;
+    gap: 12px;
+}
+
+.bench-candidate,
+.bench-reagent {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid #e2edef;
+    border-radius: 12px;
+    background: #f7fbfc;
+    flex-wrap: wrap;
+}
+
+.bench-molecule {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #eef4f5;
+    overflow: hidden;
+}
+
+.bench-molecule img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.bench-molecule-fallback {
+    font-size: 1.6rem;
+}
+
+.bench-candidate-info,
+.bench-reagent-info {
+    flex: 1;
+    min-width: 220px;
+}
+
+.bench-candidate-info h3,
+.bench-reagent-info h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    color: #102e49;
+}
+
+.bench-candidate-info p,
+.bench-reagent-info p {
+    margin: 2px 0;
+    color: #718792;
+    font-size: 0.88rem;
+}
+
+.bench-reagent-info code {
+    background: #eef4f5;
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+}
+
+.bench-empty {
+    color: #718792;
+    margin: 14px 0 4px;
+}
+
+/* ---------- Champs volume / concentration ---------- */
+.bench-reagent-fields {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.bench-reagent-fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #24455b;
+}
+
+.bench-reagent-fields input {
+    width: 130px;
+    padding: 8px 10px;
+    border: 1px solid #d5e3e7;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #102e49;
+    background: #ffffff;
+    outline: none;
+}
+
+.bench-reagent-fields input:focus {
+    border-color: #25bdbb;
+    box-shadow: 0 0 0 3px rgba(37, 189, 187, 0.15);
+}
+
+.bench-remove {
+    border: none;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.bench-remove:hover {
+    background: #fecaca;
+}
+
+.bench-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ---------- Résultats ---------- */
+.bench-results {
+    border-color: #bde7e5;
+    background: #effcfb;
+}
+
+.bench-warnings {
+    margin: 8px 0 16px;
+    padding-left: 20px;
+    color: #92400e;
+    font-size: 0.9rem;
+}
+
+.bench-results-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.bench-result-item {
+    background: #ffffff;
+    border: 1px solid #e2edef;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.bench-result-item p {
+    margin: 0 0 6px;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #718792;
+}
+
+.bench-result-item strong {
+    color: #102e49;
+    font-size: 1.15rem;
+}
+
+.bench-result-hint {
+    display: block;
+    color: #93a5ae;
+    font-size: 0.82rem;
+    margin-top: 4px;
+}
+
+.bench-hazards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 0;
+}
+
+.bench-solution-color {
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    border-radius: 8px;
+    border: 1px solid #e2edef;
+}
+
+.bench-table-wrap {
+    margin-top: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bench-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 0.9rem;
+}
+
+.bench-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #eef4f5;
+    color: #24455b;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.bench-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2edef;
+    color: #102e49;
+}
+
+.bench-formulas {
+    margin: 12px 0 0;
+    color: #718792;
+    font-size: 0.82rem;
+    font-style: italic;
+}
+
+@media (max-width: 720px) {
+    .bench-panel {
+        padding: 18px 16px;
+    }
+
+    .bench-search-form input[type="text"] {
+        min-width: 100%;
+    }
+
+    .bench-candidate,
+    .bench-reagent {
+        align-items: flex-start;
+    }
+}

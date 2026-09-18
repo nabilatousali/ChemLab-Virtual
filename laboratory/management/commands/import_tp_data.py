@@ -161,6 +161,110 @@ class Command(BaseCommand):
                 defaults={"color": color, "concentration": concentration},
             )
             result[name] = obj
+        # pH connus de quelques solutions courantes (ordres de grandeur
+        # scolaires). Renseigne uniquement les lignes encore vides pour
+        # ne jamais écraser une valeur ajustée dans l'admin.
+        known_ph = {
+            "Solution de NaOH": 13.0,
+            "Acide chlorhydrique (HCl)": -1.1,
+            "Solution de HCl diluée": 1.0,
+            "Hydroxyde de potassium (KOH)": 12.4,
+            "Lait": 6.6,
+            "Eau distillée": 7.0,
+            "Eau de Javel": 11.5,
+            "Solution tampon pH 10": 10.0,
+        }
+        for name, ph in known_ph.items():
+            Reagent.objects.filter(name=name, ph__isnull=True).update(ph=ph)
+        # Dangers SGH + conseils de manipulation (ordres de grandeur
+        # scolaires). Ne remplit que les champs encore vides pour ne
+        # jamais écraser un réglage affiné dans l'admin.
+        known_hazards = {
+            "Solution de NaOH": (
+                ["GHS05"],
+                "Gants et lunettes obligatoires. En cas de contact avec la peau, rincer abondamment à l'eau.",
+            ),
+            "Hydroxyde de sodium (NaOH) solide": (
+                ["GHS05"],
+                "Solide corrosif : gants et lunettes, éviter tout contact avec la peau.",
+            ),
+            "Soude caustique": (
+                ["GHS05"],
+                "Corrosif : gants et lunettes obligatoires.",
+            ),
+            "Acide chlorhydrique (HCl)": (
+                ["GHS05"],
+                "Acide concentré : manipuler sous hotte avec gants et lunettes.",
+            ),
+            "Solution de HCl diluée": (
+                ["GHS05"],
+                "Gants et lunettes recommandés.",
+            ),
+            "Acide sulfurique (H2SO4)": (
+                ["GHS05"],
+                "Acide concentré très corrosif : toujours verser l'acide dans l'eau, jamais l'inverse.",
+            ),
+            "Hydroxyde de potassium (KOH)": (
+                ["GHS05"],
+                "Gants et lunettes obligatoires.",
+            ),
+            "Permanganate de potassium (KMnO4)": (
+                ["GHS03", "GHS07"],
+                "Oxydant puissant : tenir éloigné des matières organiques et inflammables.",
+            ),
+            "Eau de Javel": (
+                ["GHS05", "GHS09"],
+                "Ne jamais mélanger avec un acide : dégagement de chlore toxique.",
+            ),
+            "Éthanol": (
+                ["GHS02"],
+                "Liquide inflammable : tenir éloigné des flammes.",
+            ),
+            "Éther diéthylique": (
+                ["GHS02"],
+                "Très inflammable et volatil : manipuler loin de toute flamme, sous hotte.",
+            ),
+        }
+        for name, (codes, advice) in known_hazards.items():
+            obj = result.get(name)
+            if obj is None:
+                continue
+            changed = []
+            if not obj.hazards:
+                obj.hazards = ",".join(codes)
+                changed.append("hazards")
+            if not obj.safety_advice:
+                obj.safety_advice = advice
+                changed.append("safety_advice")
+            if changed:
+                obj.save(update_fields=changed)
+        # Incompatibilités dangereuses (symétriques : un seul sens suffit).
+        strong_bases = [
+            "Solution de NaOH",
+            "Hydroxyde de sodium (NaOH) solide",
+            "Soude caustique",
+            "Hydroxyde de potassium (KOH)",
+            "Carbonate de sodium (Na2CO3)",
+        ]
+        strong_acids = [
+            "Acide chlorhydrique (HCl)",
+            "Solution de HCl diluée",
+            "Acide sulfurique (H2SO4)",
+        ]
+        incompatibilities = {
+            "Eau de Javel": strong_acids,
+            "Permanganate de potassium (KMnO4)": ["Éthanol", "Éther diéthylique"],
+        }
+        for acid in strong_acids:
+            incompatibilities.setdefault(acid, []).extend(strong_bases)
+        for name, others in incompatibilities.items():
+            obj = result.get(name)
+            if obj is None:
+                continue
+            for other in dict.fromkeys(others):
+                other_obj = result.get(other)
+                if other_obj is not None:
+                    obj.incompatible_with.add(other_obj)
         self.stdout.write(f"{len(result)} réactifs créés/vérifiés.")
         return result
 

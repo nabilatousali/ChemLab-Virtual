@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Paillasse libre — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bench.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include "laboratory/components/lab_navbar.html" %}
+<div class="lab-layout">
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">ChemLab Virtual / Paillasse libre</p>
+                <h1>Paillasse libre</h1>
+                <p class="lab-header-description">
+                    Recherchez un réactif dans la base publique PubChem, puis
+                    composez votre propre solution.
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>
+                    Bonjour, <strong>{{ user.first_name|default:user.username }}</strong>
+                </span>
+                <div class="lab-avatar">{{ user.username|first|upper }}</div>
+            </div>
+        </header>
+
+        {% if messages %}
+            <ul class="bench-messages">
+                {% for message in messages %}
+                    <li class="bench-{{ message.tags }}">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <section class="bench-panel bench-search-panel">
+            <h2><i data-lucide="search" style="width:18px;height:18px;vertical-align:-3px"></i> Rechercher un réactif</h2>
+            <p class="bench-subtitle">
+                Les informations chimiques viennent de PubChem (formule, masse
+                molaire, CID...). La simulation reste calculée par ChemLab.
+            </p>
+
+            <form method="get" action="{% url 'laboratory:bench' %}" class="bench-search-form">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ query|default:'' }}"
+                    placeholder="Ex : Acide chlorhydrique, Aspirin, Sodium hydroxide ..."
+                    maxlength="100"
+                    required
+                >
+                <button type="submit" class="bench-btn bench-btn-primary">
+                    Rechercher
+                </button>
+            </form>
+
+            {% if search_error %}
+                <p class="bench-error">{{ search_error }}</p>
+            {% elif candidates %}
+                <div class="bench-candidate-list">
+                    {% for candidate in candidates %}
+                        <article class="bench-candidate">
+                            <div class="bench-molecule">
+                                {% if candidate.image_url %}
+                                    <img src="{{ candidate.image_url }}" alt="{{ candidate.name }}" loading="lazy">
+                                {% else %}
+                                    <span class="bench-molecule-fallback">⚗</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="bench-candidate-info">
+                                <h3>{{ candidate.name }}</h3>
+                                <p>
+                                    {{ candidate.formula|default:"Formule inconnue" }}
+                                    {% if candidate.weight %}
+                                        · {{ candidate.weight }} g/mol
+                                    {% endif %}
+                                    · CID {{ candidate.cid }}
+                                </p>
+                            </div>
+
+                            <form method="post" action="{% url 'laboratory:bench_add' candidate.cid %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bench-btn bench-btn-add">
+                                    Ajouter à la paillasse
+                                </button>
+                            </form>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% elif query %}
+                <p class="bench-empty">Aucun résultat à afficher pour « {{ query }} ».</p>
+            {% endif %}
+        </section>
+
+        <section class="bench-panel bench-stock-panel">
+            <div class="bench-stock-title">
+                <h2><i data-lucide="test-tube-2" style="width:18px;height:18px;vertical-align:-3px"></i> Ma paillasse</h2>
+                {% if reagents %}
+                    <span class="bench-count">{{ reagents|length }} réactif{{ reagents|length|pluralize }}</span>
+                {% endif %}
+            </div>
+
+            {% if reagents %}
+                <form method="post" action="{% url 'laboratory:bench_simulate' %}">
+                    {% csrf_token %}
+
+                    <div class="bench-reagent-list">
+                        {% for reagent in reagents %}
+                            <article class="bench-reagent">
+                                <div class="bench-molecule">
+                                    {% if reagent.image_url %}
+                                        <img src="{{ reagent.image_url }}" alt="{{ reagent.name }}" loading="lazy">
+                                    {% else %}
+                                        <span class="bench-molecule-fallback">⚗</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="bench-reagent-info">
+                                    <h3>{{ reagent.name }}</h3>
+                                    {% if reagent.hazards %}
+                                        <p class="bench-hazards">
+                                            {% for code, is_danger in reagent.hazard_badges %}
+                                                <span class="safety-chip {% if is_danger %}danger{% else %}warning{% endif %}">{{ code }}</span>
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if reagent.molecular_formula %}
+                                        <p>Formule : {{ reagent.molecular_formula }}</p>
+                                    {% endif %}
+                                    {% if reagent.molecular_weight %}
+                                        <p>Masse molaire : {{ reagent.molecular_weight }} g/mol</p>
+                                    {% endif %}
+                                    {% if reagent.inchikey %}
+                                        <p>InChIKey : <code>{{ reagent.inchikey }}</code></p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="bench-reagent-fields">
+                                    <label for="volume_{{ reagent.pk }}">
+                                        Volume (mL)
+                                        <input
+                                            type="number"
+                                            id="volume_{{ reagent.pk }}"
+                                            name="volume_{{ reagent.pk }}"
+                                            value="{{ reagent.volume_ml|floatformat:1 }}"
+                                            min="0"
+                                            step="0.1"
+                                        >
+                                    </label>
+                                    <label for="conc_{{ reagent.pk }}">
+                                        Concentration (mol/L)
+                                        <input
+                                            type="number"
+                                            id="conc_{{ reagent.pk }}"
+                                            name="conc_{{ reagent.pk }}"
+                                            value="{% if reagent.concentration is not None %}{{ reagent.concentration|floatformat:2 }}{% endif %}"
+                                            min="0"
+                                            step="0.01"
+                                            placeholder="optionnel"
+                                        >
+                                    </label>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    form="bench-remove-{{ reagent.pk }}"
+                                    class="bench-remove"
+                                    title="Retirer de la paillasse"
+                                >
+                                    ✕
+                                </button>
+                            </article>
+                        {% endfor %}
+                    </div>
+
+                    <div class="bench-actions">
+                        <button type="submit" class="bench-btn bench-btn-primary">
+                            <i data-lucide="play" style="width:16px;height:16px;vertical-align:-2px"></i>
+                            Lancer la simulation
+                        </button>
+                    </div>
+                </form>
+
+                {% for reagent in reagents %}
+                    <form
+                        id="bench-remove-{{ reagent.pk }}"
+                        method="post"
+                        action="{% url 'laboratory:bench_remove' reagent.pk %}"
+                    >
+                        {% csrf_token %}
+                    </form>
+                {% endfor %}
+            {% else %}
+                <p class="bench-empty">
+                    Votre paillasse est vide. Recherchez un réactif ci-dessus
+                    et ajoutez-le pour composer une solution.
+                </p>
+            {% endif %}
+        </section>
+
+        {% if bench_results %}
+            <section class="bench-panel bench-results">
+                <h2>
+                    <i data-lucide="flask-round" style="width:18px;height:18px;vertical-align:-3px"></i>
+                    Résultats de la simulation
+                </h2>
+
+                {% if bench_results.warnings %}
+                    <ul class="bench-warnings">
+                        {% for warning in bench_results.warnings %}
+                            <li>{{ warning }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="bench-results-bar">
+                    <div class="bench-result-item">
+                        <p>Volume total</p>
+                        <strong>{{ bench_results.total_volume }} mL</strong>
+                    </div>
+                    <div class="bench-result-item">
+                        <p>Quantité de matière</p>
+                        {% if bench_results.has_amount %}
+                            <strong>{{ bench_results.total_amount }} mol</strong>
+                        {% else %}
+                            <strong>—</strong>
+                            <span class="bench-result-hint">indiquez une concentration</span>
+                        {% endif %}
+                    </div>
+                    <div class="bench-result-item">
+                        <p>Masse totale</p>
+                        {% if bench_results.has_amount %}
+                            <strong>{{ bench_results.total_mass }} g</strong>
+                        {% else %}
+                            <strong>—</strong>
+                        {% endif %}
+                    </div>
+                    <div class="bench-result-item">
+                        <p>Couleur de la solution</p>
+                        <span class="bench-solution-color"
+                              style="background:{{ bench_results.mixed_color }}">
+                        </span>
+                    </div>
+                </div>
+
+                {% if bench_results.computed %}
+                    <div class="bench-table-wrap">
+                        <table class="bench-table">
+                        <thead>
+                            <tr>
+                                <th>Réactif</th>
+                                <th>Formule</th>
+                                <th>M (g/mol)</th>
+                                <th>Volume (mL)</th>
+                                <th>Concentration (mol/L)</th>
+                                <th>Quantité de matière (mol)</th>
+                                <th>Masse (g)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in bench_results.computed %}
+                                <tr>
+                                    <td>{{ entry.reagent.name }}</td>
+                                    <td>{{ entry.reagent.molecular_formula|default:"—" }}</td>
+                                    <td>{{ entry.reagent.molecular_weight|default:"—" }}</td>
+                                    <td>{{ entry.volume }}</td>
+                                    <td>{{ entry.concentration|default:"—" }}</td>
+                                    <td>{{ entry.amount|default:"—" }}</td>
+                                    <td>{{ entry.mass|default:"—" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                    <p class="bench-formulas">
+                        Formules utilisées : n = C × V  ·  m = n × M
+                    </p>
+                {% endif %}
+            </section>
+        {% endif %}
+
+    </main>
+</div>
+{% endblock %}

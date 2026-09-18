@@ -1,0 +1,48 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+{% if admin_dashboard %}
+<section class="chemlab-dashboard" aria-label="Tableau de bord">
+    <h2>Tableau de bord</h2>
+    <div class="chemlab-dashboard-grid">
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.users_total }}</strong>
+            <span>Utilisateurs inscrits</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.users_active }}</strong>
+            <span>Comptes actifs</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.experiments_total }}</strong>
+            <span>Expériences</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.experiments_published }}</strong>
+            <span>Expériences publiées</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.results_total }}</strong>
+            <span>Résultats enregistrés</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.results_success }}</strong>
+            <span>Résultats réussis</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.groups_total }}</strong>
+            <span>Groupes</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.invitations_pending }}</strong>
+            <span>Invitations en attente</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.bench_reagents }}</strong>
+            <span>Réactifs paillasse libre</span>
+        </div>
+    </div>
+</section>
+{% endif %}
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,522 @@
+/* =========================================================
+   ChemLab Virtual — thème global
+   Socle commun chargé après les CSS de page : police, fonds,
+   cartes, champs et boutons sont harmonisés sur navy/teal.
+   ========================================================= */
+
+:root {
+    --cl-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --cl-display: "Sora", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --cl-navy: #071b2e;
+    --cl-ink: #102e49;
+    --cl-muted: #718792;
+    --cl-faint: #93a5ae;
+    --cl-teal: #25bdbb;
+    --cl-teal-bright: #65ded5;
+    --cl-teal-dark: #15999d;
+    --cl-teal-soft: #e6f6f5;
+    --cl-teal-softer: #effcfb;
+    --cl-bg: #f6f9fc;
+    --cl-surface: #ffffff;
+    --cl-border: #e2edef;
+    --cl-shadow: 0 14px 35px rgba(16, 46, 73, 0.07);
+    --cl-radius: 16px;
+    --cl-radius-sm: 10px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    color: var(--cl-ink);
+    background: var(--cl-bg);
+    font-family: var(--cl-font);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2 {
+    font-family: var(--cl-display);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+}
+
+h3,
+h4 {
+    font-family: var(--cl-font);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+img {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+::selection {
+    background: rgba(101, 222, 213, 0.38);
+}
+
+:focus-visible {
+    outline: 2px solid var(--cl-teal);
+    outline-offset: 2px;
+}
+
+/* Fonds de page unifiés */
+.lab-layout,
+.catalogue-page,
+.catalogue-section,
+.auth-page,
+.auth-panel {
+    background: var(--cl-bg);
+}
+
+/* Cartes et panneaux unifiés */
+.experiment-card,
+.step-card,
+.group-card,
+.group-panel,
+.group-form,
+.notifications-panel,
+.bench-panel,
+.history-panel,
+.detail-card,
+.profile-card,
+.stat-card,
+.workspace-panel,
+.workbench,
+.protocol-panel,
+.materials-panel,
+.empty-state {
+    border: 1px solid var(--cl-border);
+    border-radius: var(--cl-radius);
+    background: var(--cl-surface);
+    box-shadow: var(--cl-shadow);
+}
+
+/* Textes secondaires sur fonds clairs */
+.lab-header-description,
+.lab-user,
+.experiment-duration,
+.experiment-card p,
+.experiment-card-footer,
+.group-card p,
+.group-shared-meta,
+.group-hint,
+.bench-subtitle,
+.detail-content p,
+.auth-intro,
+.history-cell span,
+.history-empty,
+.dropdown-empty,
+.workspace-hint,
+.workbench-placeholder,
+.container-contents {
+    color: var(--cl-muted);
+}
+
+/* Champs unifiés */
+.auth-input,
+.group-form input,
+.group-form textarea,
+.group-inline-form input,
+.group-inline-form select,
+.group-chat-form input,
+.bench-search-form input[type="text"],
+.bench-reagent-fields input,
+.volume-modal input[type="number"] {
+    border-radius: var(--cl-radius-sm);
+}
+
+.auth-input:focus,
+.group-form input:focus,
+.group-form textarea:focus,
+.group-inline-form input:focus,
+.group-inline-form select:focus,
+.group-chat-form input:focus,
+.bench-search-form input[type="text"]:focus,
+.bench-reagent-fields input:focus,
+.volume-modal input[type="number"]:focus {
+    outline: none;
+    border-color: var(--cl-teal);
+    box-shadow: 0 0 0 4px rgba(37, 189, 187, 0.16);
+}
+
+/* Boutons d’action rectangulaires unifiés */
+.button,
+.bench-btn,
+.groups-create-button,
+.group-form button,
+.notif-btn,
+.detail-cta,
+.detail-cta-ghost,
+.volume-btn-secondary,
+.volume-btn-primary,
+.auth-submit {
+    border-radius: var(--cl-radius-sm);
+}
+
+/* =========================================================
+   Échelle typographique : textes agrandis
+   ========================================================= */
+.eyebrow {
+    font-size: 12px;
+}
+
+.hero-description {
+    font-size: 19px;
+}
+
+.button {
+    font-size: 13px;
+}
+
+.experiment-body h2 {
+    font-size: 18px;
+}
+
+.experiment-body p {
+    font-size: 14px;
+}
+
+.experiment-meta {
+    font-size: 11px;
+}
+
+.card-link,
+.experiment-link {
+    font-size: 14px;
+}
+
+.step-card h3 {
+    font-size: 21px;
+}
+
+.step-card p {
+    font-size: 15px;
+}
+
+.lab-breadcrumb {
+    font-size: 14px;
+}
+
+.lab-header-description {
+    font-size: 17px;
+}
+
+.experiment-card h2 {
+    font-size: 20px;
+}
+
+.experiment-status {
+    font-size: 12px;
+}
+
+.experiment-duration,
+.experiment-card-footer {
+    font-size: 13px;
+}
+
+.group-card h2 {
+    font-size: 1.15rem;
+}
+
+.group-card p {
+    font-size: 0.95rem;
+}
+
+.group-card-meta,
+.group-shared-meta {
+    font-size: 0.85rem;
+}
+
+.group-hint {
+    font-size: 0.82rem;
+}
+
+.notification-text {
+    font-size: 0.95rem;
+}
+
+.notif-btn {
+    font-size: 0.88rem;
+}
+
+.bench-panel h2 {
+    font-size: 1.4rem;
+}
+
+.bench-subtitle {
+    font-size: 1.05rem;
+}
+
+.bench-count {
+    font-size: 0.85rem;
+}
+
+.bench-candidate-info p,
+.bench-reagent-info p,
+.bench-empty {
+    font-size: 0.95rem;
+}
+
+.bench-formulas {
+    font-size: 0.9rem;
+}
+
+.bench-result-hint {
+    font-size: 0.82rem;
+}
+
+.bench-table th {
+    font-size: 0.85rem;
+}
+
+.bench-table td {
+    font-size: 0.95rem;
+}
+
+.detail-content h1 {
+    font-size: 2.3rem;
+}
+
+.auth-intro {
+    font-size: 15px;
+}
+
+.auth-submit {
+    font-size: 15px;
+}
+
+.auth-switch {
+    font-size: 14px;
+}
+
+.history-cell strong {
+    font-size: 16px;
+}
+
+.history-cell span {
+    font-size: 13px;
+}
+
+.history-retry {
+    font-size: 14px;
+}
+
+.history-empty {
+    font-size: 15px;
+}
+
+.profile-name {
+    font-size: 22px;
+}
+
+.profile-meta span,
+.profile-meta strong {
+    font-size: 14px;
+}
+
+.stat-card p {
+    font-size: 14px;
+}
+
+.dropdown-item {
+    font-size: 0.95rem;
+}
+
+.protocol-steps p {
+    font-size: 0.92rem;
+}
+
+.result-item p {
+    font-size: 0.88rem;
+}
+
+.volume-modal p {
+    font-size: 0.92rem;
+}
+
+.workspace-hint,
+.dropdown-empty {
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   Polish professionnel : échelle généreuse, mêmes couleurs
+   ========================================================= */
+:root {
+    --cl-shadow: 0 18px 44px rgba(16, 46, 73, 0.10);
+}
+
+body {
+    font-size: 18px;
+    line-height: 1.65;
+}
+
+h1,
+h2 {
+    font-weight: 800;
+}
+
+.eyebrow {
+    font-size: 13px;
+    letter-spacing: 2.5px;
+}
+
+/* En-têtes de pages */
+.lab-header {
+    padding-bottom: 28px;
+}
+
+.lab-header h1 {
+    font-size: clamp(36px, 4.5vw, 56px);
+}
+
+.lab-breadcrumb {
+    font-size: 15px;
+}
+
+.lab-header-description {
+    font-size: 18px;
+}
+
+/* Cartes : présence + survol */
+.experiment-card,
+.group-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.experiment-card:hover,
+.group-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 48px rgba(16, 46, 73, 0.13);
+}
+
+.experiment-card h2 {
+    font-size: 22px;
+}
+
+.experiment-card p {
+    font-size: 16px;
+}
+
+.experiment-body h2 {
+    font-size: 20px;
+}
+
+.experiment-body p {
+    font-size: 15px;
+}
+
+.group-card h2 {
+    font-size: 1.25rem;
+}
+
+.group-card p {
+    font-size: 1rem;
+}
+
+/* Boutons d'action généreux */
+.button {
+    min-height: 52px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    border-radius: 12px;
+}
+
+.bench-btn,
+.groups-create-button,
+.detail-cta,
+.detail-cta-ghost {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.auth-submit {
+    height: 58px;
+    font-size: 16px;
+}
+
+/* Champs lisibles */
+.auth-input {
+    height: 60px;
+    font-size: 16px;
+}
+
+.group-form input,
+.group-form textarea,
+.bench-search-form input[type="text"] {
+    font-size: 1rem;
+    padding: 13px 16px;
+}
+
+/* Textes courants */
+.hero-description {
+    font-size: 20px;
+}
+
+.auth-intro {
+    font-size: 16px;
+}
+
+.detail-content h1 {
+    font-size: 2.5rem;
+}
+
+.history-cell strong {
+    font-size: 17px;
+}
+
+.profile-name {
+    font-size: 24px;
+}
+
+.bench-panel h2 {
+    font-size: 1.5rem;
+}
+
+.bench-subtitle {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 720px) {
+    body {
+        font-size: 16.5px;
+    }
+
+    .lab-header h1 {
+        font-size: clamp(30px, 8vw, 40px);
+    }
+
+    .detail-content h1 {
+        font-size: 2rem;
+    }
+
+    .auth-input {
+        height: 56px;
+    }
+}

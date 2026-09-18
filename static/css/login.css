@@ -34,9 +34,9 @@
 
 /* Placeholders attendus par le backend de connexion */
 .login-page input[name="email"]::placeholder {
-    color: #a8b8bd;
+    color: #93a5ae;
 }
 
 .login-page input[name="password"]::placeholder {
-    color: #a8b8bd;
+    color: #93a5ae;
 }

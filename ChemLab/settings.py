@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
 
     'accounts',
     'experiments',
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -86,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "groups.context_processors.pending_invitations_count",
+                "ChemLab.admin_dashboard.dashboard_stats",
             ],
         },
     },
@@ -166,6 +169,31 @@ LOGOUT_REDIRECT_URL = "laboratory:home"
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DJANGO_DEFAULT_FROM_EMAIL", "ChemLab Virtual <noreply@chemlab.local>"
+)
+
+
+# Backend d'authentification : django-axes verrouille les comptes
+# après échecs répétés (nécessite la requête dans authenticate()).
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
+# ---------------------------------------------------------------------------
+# Anti brute-force (django-axes) : verrouillage après échecs répétés
+# ---------------------------------------------------------------------------
+
+# Verrouillage au 5e échec, déblocage auto après 1 heure.
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+
+# Verrouille le couple (compte, IP) : un attaquant ne bloque pas les
+# autres utilisateurs, et un utilisateur légitime ailleurs n'est pas impacté.
+AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
 
 
 # ---------------------------------------------------------------------------

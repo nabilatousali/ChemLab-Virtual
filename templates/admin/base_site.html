@@ -1,0 +1,57 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}{{ title }} | ChemLab — Administration{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">ChemLab Virtual — Administration</a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    #header {
+        background: #071b2e;
+        color: #ffffff;
+    }
+    #header a:link,
+    #header a:visited {
+        color: #65ded5;
+    }
+    #header #user-tools,
+    #header #user-tools a {
+        color: rgba(235, 245, 248, 0.85);
+    }
+    .chemlab-dashboard {
+        margin-bottom: 24px;
+    }
+    .chemlab-dashboard h2 {
+        margin: 0 0 12px;
+        color: #102e49;
+        font-size: 18px;
+    }
+    .chemlab-dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    .chemlab-stat {
+        padding: 12px 14px;
+        border: 1px solid #e2edef;
+        border-left: 4px solid #25bdbb;
+        border-radius: 10px;
+        background: #ffffff;
+    }
+    .chemlab-stat strong {
+        display: block;
+        color: #102e49;
+        font-size: 24px;
+        line-height: 1.1;
+    }
+    .chemlab-stat span {
+        color: #718792;
+        font-size: 12px;
+    }
+</style>
+{% endblock %}

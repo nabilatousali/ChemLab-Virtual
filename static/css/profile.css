@@ -52,7 +52,7 @@
 
 .stat-card p {
     margin: 0 0 5px;
-    color: #758e99;
+    color: #718792;
     font-size: 13px;
     letter-spacing: 0.2px;
 }
@@ -92,7 +92,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #1d9fa2, #2563EB);
+    background: linear-gradient(90deg, #15999d, #102e49);
     border-radius: 20px 20px 0 0;
 }
 
@@ -108,7 +108,7 @@
 
 .profile-card h2 i,
 .profile-card h2 svg {
-    color: #1d9fa2;
+    color: #15999d;
 }
 
 /* ---- Avatar profil ---- */
@@ -123,14 +123,14 @@
     margin: 0 auto 16px;
     color: #ffffff;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1d9fa2 0%, #0c5874 50%, #2563EB 100%);
+    background: linear-gradient(135deg, #15999d 0%, #0c5874 50%, #102e49 100%);
     background-size: 200% 200%;
     font-size: 36px;
     font-weight: 700;
     letter-spacing: -1px;
     box-shadow:
         0 0 0 4px #ffffff,
-        0 0 0 6px #d4eaeb,
+        0 0 0 6px #bde7e5,
         0 8px 24px rgba(29, 159, 162, 0.25);
     animation: avatar-gradient 4s ease-in-out infinite;
 }
@@ -173,11 +173,11 @@
 }
 
 .profile-meta li:hover {
-    background: #f8fbfc;
+    background: #f7fbfc;
 }
 
 .profile-meta span {
-    color: #758e99;
+    color: #718792;
     font-size: 13px;
 }
 
@@ -272,5 +272,21 @@
 
     .stat-card strong {
         font-size: 26px;
+    }
+}
+
+@media (max-width: 560px) {
+    .profile-card {
+        padding: 22px 18px;
+    }
+
+    .profile-meta li {
+        flex-wrap: wrap;
+        row-gap: 4px;
+    }
+
+    .profile-meta strong {
+        max-width: 100%;
+        overflow-wrap: anywhere;
     }
 }
