@@ -17,8 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from administration.admin import dashboard as administration_dashboard
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "administration/",
+        administration_dashboard,
+        name="administration_dashboard",
+    ),
     path("", include("laboratory.urls")),
     path("accounts/", include("accounts.urls")),
     path("experiments/", include("experiments.urls")),

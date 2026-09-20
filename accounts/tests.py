@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -13,7 +13,7 @@ from .admin import UserAdmin
 
 
 class UserAdminSecurityTest(TestCase):
-    """L'admin ne peut modifier aucune donnée sensible d'un utilisateur."""
+    """L'admin gère les comptes : création, droits, modération — sans suppression."""
 
     def setUp(self):
         self.admin_class = UserAdmin(User, admin.site)
@@ -23,31 +23,30 @@ class UserAdminSecurityTest(TestCase):
             password="MotDePasse123!",
         )
 
-    def test_sensitive_fields_are_readonly(self):
-        readonly = self.admin_class.get_readonly_fields(self.user)
+    def test_identity_readonly_on_change(self):
+        readonly = self.admin_class.get_readonly_fields(None, self.user)
         for field in ("username", "email", "first_name", "last_name", "date_joined", "last_login"):
             self.assertIn(field, readonly)
 
-    def test_password_is_not_editable(self):
-        fieldsets = self.admin_class.get_fieldsets(self.user)
-        editable = [
-            field
-            for _, opts in fieldsets
-            for field in opts["fields"]
-        ]
-        self.assertNotIn("password", editable)
+    def test_rights_editable_on_change(self):
+        readonly = self.admin_class.get_readonly_fields(None, self.user)
+        for field in ("is_active", "is_staff", "is_superuser", "groups", "user_permissions"):
+            self.assertNotIn(field, readonly)
 
-    def test_no_add_permission(self):
-        request = type("R", (), {})()
-        self.assertFalse(self.admin_class.has_add_permission(request))
+    def test_add_permission_granted(self):
+        request = RequestFactory().get("/admin/")
+        request.user = User.objects.create_superuser(
+            username="root", email="root@example.com", password="TestPass123!"
+        )
+        self.assertTrue(self.admin_class.has_add_permission(request))
 
     def test_no_delete_permission(self):
         self.assertFalse(self.admin_class.has_delete_permission(None, obj=self.user))
 
-    def test_password_change_url_removed(self):
+    def test_password_change_url_available(self):
         urls = self.admin_class.get_urls()
         names = {url.name for url in urls}
-        self.assertNotIn("auth_user_password_change", names)
+        self.assertIn("auth_user_password_change", names)
 
 
 class VisitorAccessTest(TestCase):
@@ -195,6 +194,39 @@ class AdminDashboardTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Tableau de bord")
         self.assertContains(response, "Utilisateurs inscrits")
+        self.assertContains(response, "Nouveaux (7 jours)")
+        self.assertContains(response, "Derniers comptes créés")
+        self.assertContains(response, "Derniers résultats")
+
+    def test_superuser_can_add_user_via_admin(self):
+        admin_user = User.objects.create_superuser(
+            username="admin", email="admin@example.com", password="TestPass123!"
+        )
+        self.client.force_login(admin_user)
+        response = self.client.post(reverse("admin:auth_user_add"), {
+            "username": "nouveau",
+            "email": "nouveau@example.com",
+            "password1": "MotDePasse123!",
+            "password2": "MotDePasse123!",
+            "is_active": "on",
+        })
+        self.assertEqual(response.status_code, 302)
+        created = User.objects.get(username="nouveau")
+        self.assertTrue(created.is_active)
+        self.assertTrue(created.check_password("MotDePasse123!"))
+
+    def test_superuser_can_deactivate_user_via_admin(self):
+        admin_user = User.objects.create_superuser(
+            username="admin", email="admin@example.com", password="TestPass123!"
+        )
+        self.client.force_login(admin_user)
+        response = self.client.post(
+            reverse("admin:auth_user_change", args=[self.member.id]),
+            {"username": "member", "email": "member@example.com"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.member.refresh_from_db()
+        self.assertFalse(self.member.is_active)
 
     def test_no_admin_link_on_public_pages(self):
         for url in (
@@ -203,6 +235,41 @@ class AdminDashboardTest(TestCase):
         ):
             with self.subTest(url=url):
                 self.assertNotContains(self.client.get(url), "/admin/")
+
+
+class CustomAdminDashboardTest(TestCase):
+    """L'espace /administration/ est réservé au staff, sans lien public."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.staff = User.objects.create_user(username="staff", password="TestPass123!", is_staff=True)
+        cls.member = User.objects.create_user(username="member", password="TestPass123!")
+
+    def test_anonymous_redirected_to_admin_login(self):
+        response = self.client.get(reverse("administration_dashboard"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/admin/login/", response.url)
+
+    def test_non_staff_redirected(self):
+        self.client.force_login(self.member)
+        response = self.client.get(reverse("administration_dashboard"))
+        self.assertEqual(response.status_code, 302)
+
+    def test_staff_sees_full_dashboard(self):
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse("administration_dashboard"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Tableau de bord")
+        self.assertContains(response, "Gérer la plateforme")
+        self.assertContains(response, "/admin/auth/user/")
+
+    def test_no_public_link_to_custom_dashboard(self):
+        for url in (
+            reverse("laboratory:home"),
+            reverse("experiments:catalogue"),
+        ):
+            with self.subTest(url=url):
+                self.assertNotContains(self.client.get(url), "/administration/")
 
 
 class NavbarVariantsTest(TestCase):
@@ -219,7 +286,7 @@ class NavbarVariantsTest(TestCase):
     def test_visitor_navbar_shows_only_public_links(self):
         response = self.client.get(reverse("laboratory:home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "images/logo.svg")
+        self.assertContains(response, "images/logo.png")
         navbar = self.navbar_section(response)
         for label in ("Accueil", "Catalogue", "S'inscrire"):
             with self.subTest(label=label):

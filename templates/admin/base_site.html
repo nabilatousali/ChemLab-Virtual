@@ -31,6 +31,10 @@
         color: #102e49;
         font-size: 18px;
     }
+    .chemlab-full-link {
+        margin: 0 0 14px;
+        font-size: 13px;
+    }
     .chemlab-dashboard-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -52,6 +56,54 @@
     .chemlab-stat span {
         color: #718792;
         font-size: 12px;
+    }
+    .chemlab-activity {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+    .chemlab-activity-panel {
+        padding: 14px 16px;
+        border: 1px solid #e2edef;
+        border-radius: 10px;
+        background: #ffffff;
+    }
+    .chemlab-activity-panel h3 {
+        margin: 0 0 10px;
+        color: #102e49;
+        font-size: 14px;
+    }
+    .chemlab-activity-panel ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .chemlab-activity-panel li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 7px 0;
+        border-bottom: 1px solid #eef4f5;
+        font-size: 13px;
+    }
+    .chemlab-activity-panel li:last-child {
+        border-bottom: none;
+    }
+    .chemlab-activity-panel small {
+        color: #718792;
+    }
+    .chemlab-ok {
+        color: #059669;
+        font-weight: 700;
+    }
+    .chemlab-ko {
+        color: #b91c1c;
+        font-weight: 700;
+    }
+    .chemlab-empty {
+        color: #93a5ae;
     }
 </style>
 {% endblock %}

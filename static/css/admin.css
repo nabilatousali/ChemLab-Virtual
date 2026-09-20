@@ -1,0 +1,154 @@
+/* =========================================================
+   ChemLab Virtual — espace d'administration dédié (/administration/)
+   Réservé au staff. Identité navy/teal de la plateforme.
+   ========================================================= */
+
+.adm-section {
+    margin-top: 32px;
+}
+
+.adm-section-title {
+    margin: 0 0 16px;
+    color: #102e49;
+    font-size: 22px;
+}
+
+.adm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+}
+
+.adm-stat {
+    padding: 18px;
+    border: 1px solid #e2edef;
+    border-left: 4px solid #25bdbb;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 14px 35px rgba(16, 46, 73, 0.07);
+}
+
+.adm-stat strong {
+    display: block;
+    color: #102e49;
+    font-size: 30px;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+.adm-stat span {
+    color: #718792;
+    font-size: 13px;
+}
+
+.adm-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.adm-panel {
+    padding: 22px;
+    border: 1px solid #e2edef;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 14px 35px rgba(16, 46, 73, 0.07);
+}
+
+.adm-panel h2 {
+    margin: 0 0 12px;
+    color: #102e49;
+    font-size: 18px;
+}
+
+.adm-panel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.adm-panel li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eef4f5;
+    font-size: 14px;
+}
+
+.adm-panel li:last-child {
+    border-bottom: none;
+}
+
+.adm-panel small {
+    color: #718792;
+}
+
+.adm-panel a {
+    color: #15999d;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.adm-panel a:hover {
+    text-decoration: underline;
+}
+
+.adm-ok {
+    color: #059669;
+    font-weight: 700;
+}
+
+.adm-ko {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+.adm-empty {
+    color: #93a5ae;
+}
+
+.adm-shortcuts {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.adm-shortcut {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px;
+    border: 1px solid #e2edef;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 14px 35px rgba(16, 46, 73, 0.07);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.adm-shortcut:hover {
+    transform: translateY(-3px);
+    border-color: #65ded5;
+    box-shadow: 0 20px 44px rgba(16, 46, 73, 0.12);
+}
+
+.adm-shortcut strong {
+    color: #102e49;
+    font-size: 17px;
+}
+
+.adm-shortcut span {
+    color: #718792;
+    font-size: 13px;
+}
+
+@media (max-width: 560px) {
+    .adm-stat strong {
+        font-size: 24px;
+    }
+
+    .adm-panel {
+        padding: 18px 16px;
+    }
+}

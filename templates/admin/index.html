@@ -4,6 +4,9 @@
 {% if admin_dashboard %}
 <section class="chemlab-dashboard" aria-label="Tableau de bord">
     <h2>Tableau de bord</h2>
+    <p class="chemlab-full-link">
+        <a href="{% url 'administration_dashboard' %}">Ouvrir le tableau de bord complet →</a>
+    </p>
     <div class="chemlab-dashboard-grid">
         <div class="chemlab-stat">
             <strong>{{ admin_dashboard.users_total }}</strong>
@@ -12,6 +15,10 @@
         <div class="chemlab-stat">
             <strong>{{ admin_dashboard.users_active }}</strong>
             <span>Comptes actifs</span>
+        </div>
+        <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.users_week }}</strong>
+            <span>Nouveaux (7 jours)</span>
         </div>
         <div class="chemlab-stat">
             <strong>{{ admin_dashboard.experiments_total }}</strong>
@@ -30,6 +37,10 @@
             <span>Résultats réussis</span>
         </div>
         <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.results_week }}</strong>
+            <span>Résultats (7 jours)</span>
+        </div>
+        <div class="chemlab-stat">
             <strong>{{ admin_dashboard.groups_total }}</strong>
             <span>Groupes</span>
         </div>
@@ -38,8 +49,43 @@
             <span>Invitations en attente</span>
         </div>
         <div class="chemlab-stat">
+            <strong>{{ admin_dashboard.chat_messages }}</strong>
+            <span>Messages de groupe</span>
+        </div>
+        <div class="chemlab-stat">
             <strong>{{ admin_dashboard.bench_reagents }}</strong>
             <span>Réactifs paillasse libre</span>
+        </div>
+    </div>
+
+    <div class="chemlab-activity">
+        <div class="chemlab-activity-panel">
+            <h3>Derniers comptes créés</h3>
+            <ul>
+                {% for u in admin_dashboard.recent_users %}
+                    <li>
+                        <a href="{% url 'admin:auth_user_change' u.id %}">{{ u.username }}</a>
+                        <small>{{ u.date_joined|date:"d/m/Y" }}</small>
+                    </li>
+                {% empty %}
+                    <li class="chemlab-empty">Aucun compte pour l'instant.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="chemlab-activity-panel">
+            <h3>Derniers résultats</h3>
+            <ul>
+                {% for r in admin_dashboard.recent_results %}
+                    <li>
+                        <span>{{ r.experiment__title }} <small>par {{ r.user__username }}</small></span>
+                        <small class="{% if r.is_successful %}chemlab-ok{% else %}chemlab-ko{% endif %}">
+                            {% if r.is_successful %}réussi{% else %}à corriger{% endif %}
+                        </small>
+                    </li>
+                {% empty %}
+                    <li class="chemlab-empty">Aucun résultat pour l'instant.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </section>

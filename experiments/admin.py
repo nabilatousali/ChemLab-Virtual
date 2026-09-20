@@ -12,6 +12,11 @@ class ExperimentAdmin(admin.ModelAdmin):
         "is_published",
     )
 
+    list_editable = (
+        "is_featured",
+        "is_published",
+    )
+
     list_filter = (
         "level",
         "is_featured",
@@ -22,6 +27,8 @@ class ExperimentAdmin(admin.ModelAdmin):
         "title",
         "short_description",
     )
+
+    date_hierarchy = "created_at"
 
     prepopulated_fields = {
         "slug": ("title",),

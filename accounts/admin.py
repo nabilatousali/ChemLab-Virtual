@@ -1,11 +1,13 @@
 """
-Configuration d'administration de la plateforme.
+Configuration d'administration des comptes utilisateurs.
 
-Sécurité : les comptes utilisateurs étant créés via l'inscription publique,
-l'administrateur ne peut PAS modifier les données sensibles d'un utilisateur
-(adresse e-mail, mot de passe, identité, dates de connexion, rôles).
-Il peut uniquement consulter ces informations et gérer l'état du compte
-(activation / statut staff) pour la modération.
+Politique : l'administrateur gère tout le cycle de vie SAUF la suppression
+(dangereuse en cascade : résultats, groupes créés, messages...).
+    - Création de comptes (avec mot de passe initial) ;
+    - Droits : activation, statut staff / superuser, groupes, permissions ;
+    - Modération : désactivation (is_active) pour bloquer une connexion ;
+    - Identité (nom, e-mail...) modifiable uniquement à la création :
+      ensuite, seul l'utilisateur concerné en est responsable.
 """
 
 from django.contrib import admin
@@ -18,33 +20,39 @@ admin.site.unregister(User)
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    """Admin utilisateur restreint : lecture seule sur les données sensibles."""
-
-    # Champs sensibles protégés en lecture seule
-    readonly_fields = (
-        "username",
-        "first_name",
-        "last_name",
-        "email",
-        "date_joined",
-        "last_login",
-        "groups",
-        "user_permissions",
-    )
+    """Admin utilisateur complet : création, droits, modération."""
 
     list_display = ("username", "email", "is_active", "is_staff", "date_joined")
+    list_filter = ("is_active", "is_staff", "is_superuser", "groups")
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("-date_joined",)
 
-    # Seule l'activation / le statut staff restent gérables.
-    # En revanche, il n'est pas autorisé de :
-    #   - changer le mot de passe (mot de passe en lecture seule),
-    #   - importer / créer / supprimer des comptes utilisateurs,
-    #   - modifier les informations personnelles et de connexion.
+    # Création : identité + mot de passe + droits initiaux.
+    add_fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "password1",
+                    "password2",
+                )
+            },
+        ),
+        (
+            "Droits",
+            {"fields": ("is_active", "is_staff", "is_superuser", "groups")},
+        ),
+    )
+
+    # Modification : identité protégée, état et droits gérables.
     fieldsets = (
         (None, {"fields": ("username", "first_name", "last_name", "email")}),
         (
-            "État du compte",
+            "État du compte et droits",
             {
                 "fields": (
                     "is_active",
@@ -59,30 +67,27 @@ class UserAdmin(BaseUserAdmin):
             "Activité",
             {
                 "fields": (
-                    "date_joined",
                     "last_login",
+                    "date_joined",
                 )
             },
         ),
     )
 
-    def has_add_permission(self, request):
-        """Les comptes sont créés uniquement via l'inscription publique."""
-        return False
+    def get_readonly_fields(self, request, obj=None):
+        """Identité modifiable à la création seulement, jamais après."""
+        if obj is None:
+            return ("last_login", "date_joined")
+        return (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "last_login",
+            "date_joined",
+        )
 
     def has_delete_permission(self, request, obj=None):
-        """Interdiction de supprimer un compte utilisateur depuis l'admin."""
+        """Suppression interdite : cascade destructrice (résultats,
+        groupes créés, messages, paillasse...). Modérer via is_active."""
         return False
-
-    # Le mot de passe ne doit jamais être modifiable ni affiché en clair.
-    def get_fieldsets(self, request, obj=None):
-        if obj is None:
-            return (
-                (None, {"fields": []}),
-            )
-        return super().get_fieldsets(request, obj)
-
-    def get_urls(self):
-        """Supprime la route « changer le mot de passe » de l'admin."""
-        urls = super().get_urls()
-        return [url for url in urls if "auth_user_password_change" not in str(url.name)]

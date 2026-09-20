@@ -6,6 +6,7 @@ Un visiteur (utilisateur non connecté) n'a accès qu'à :
     - la fiche détaillée d'une expérience,
     - les pages de connexion / inscription / activation,
     - l'interface d'administration (accès staff),
+    - l'espace d'administration dédié /administration/ (accès staff),
     - les fichiers statiques et médias.
 
 Toute autre ressource redirige vers la page de connexion (avec retour
@@ -25,6 +26,7 @@ PUBLIC_PATHS = (
     "/static/",
     "/media/",
     "/admin/",
+    "/administration/",
     "/accounts/login/",
     "/accounts/register/",
 )

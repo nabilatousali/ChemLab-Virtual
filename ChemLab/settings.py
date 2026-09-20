@@ -37,7 +37,17 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes")
 
 ALLOWED_HOSTS = [
-    host for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if host
+    host.strip()
+    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
+
+# Origines de confiance pour les POST (obligatoire en prod HTTPS,
+# sinon tous les formulaires sont rejetés en 403 CSRF).
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
 
 
@@ -60,6 +70,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,6 +168,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+# Dossier de collecte des statiques en production (collectstatic, WhiteNoise).
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -194,6 +208,10 @@ AXES_COOLOFF_TIME = 1
 # Verrouille le couple (compte, IP) : un attaquant ne bloque pas les
 # autres utilisateurs, et un utilisateur légitime ailleurs n'est pas impacté.
 AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
+
+# Derrière le proxy de l'hébergeur (ex. Render), l'IP client se lit dans
+# X-Forwarded-For avec un seul proxy de confiance.
+AXES_IPWARE_PROXY_COUNT = 1
 
 
 # ---------------------------------------------------------------------------

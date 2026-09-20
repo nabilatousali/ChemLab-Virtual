@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Administration — ChemLab Virtual{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/laboratory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include "laboratory/components/lab_navbar.html" %}
+<div class="lab-layout">
+
+    <main class="lab-main">
+
+        <header class="lab-header">
+            <div>
+                <p class="lab-breadcrumb">ChemLab Virtual / Administration</p>
+                <h1>Tableau de bord</h1>
+                <p class="lab-header-description">
+                    Pilotage de la plateforme : statistiques, activité récente
+                    et gestion (utilisateurs, contenus, groupes).
+                </p>
+            </div>
+
+            <div class="lab-user">
+                <span>Connecté en tant que <strong>{{ user.username }}</strong></span>
+                <div class="lab-avatar">{{ user.username|first|upper }}</div>
+            </div>
+        </header>
+
+        <section class="adm-section" aria-label="Statistiques">
+            <div class="adm-grid">
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.users_total }}</strong>
+                    <span>Utilisateurs inscrits</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.users_active }}</strong>
+                    <span>Comptes actifs</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.users_week }}</strong>
+                    <span>Nouveaux (7 jours)</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.experiments_total }}</strong>
+                    <span>Expériences</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.experiments_published }}</strong>
+                    <span>Expériences publiées</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.results_total }}</strong>
+                    <span>Résultats enregistrés</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.results_success }}</strong>
+                    <span>Résultats réussis</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.results_week }}</strong>
+                    <span>Résultats (7 jours)</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.groups_total }}</strong>
+                    <span>Groupes</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.invitations_pending }}</strong>
+                    <span>Invitations en attente</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.chat_messages }}</strong>
+                    <span>Messages de groupe</span>
+                </div>
+                <div class="adm-stat">
+                    <strong>{{ admin_dashboard.bench_reagents }}</strong>
+                    <span>Réactifs paillasse libre</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="adm-columns">
+            <section class="adm-panel" aria-label="Derniers comptes">
+                <h2>Derniers comptes créés</h2>
+                <ul>
+                    {% for u in admin_dashboard.recent_users %}
+                        <li>
+                            <a href="{% url 'admin:auth_user_change' u.id %}">{{ u.username }}</a>
+                            <small>{{ u.date_joined|date:"d/m/Y" }}</small>
+                        </li>
+                    {% empty %}
+                        <li class="adm-empty">Aucun compte pour l'instant.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="adm-panel" aria-label="Derniers résultats">
+                <h2>Derniers résultats</h2>
+                <ul>
+                    {% for r in admin_dashboard.recent_results %}
+                        <li>
+                            <span>{{ r.experiment__title }} <small>par {{ r.user__username }}</small></span>
+                            <small class="{% if r.is_successful %}adm-ok{% else %}adm-ko{% endif %}">
+                                {% if r.is_successful %}réussi{% else %}à corriger{% endif %}
+                            </small>
+                        </li>
+                    {% empty %}
+                        <li class="adm-empty">Aucun résultat pour l'instant.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+
+        <section class="adm-section" aria-label="Gestion">
+            <h2 class="adm-section-title">Gérer la plateforme</h2>
+            <div class="adm-grid adm-shortcuts">
+                <a class="adm-shortcut" href="{% url 'admin:auth_user_changelist' %}">
+                    <strong>Utilisateurs</strong>
+                    <span>Créer, droits, désactiver</span>
+                </a>
+                <a class="adm-shortcut" href="{% url 'admin:experiments_experiment_changelist' %}">
+                    <strong>Expériences</strong>
+                    <span>Contenus, publication</span>
+                </a>
+                <a class="adm-shortcut" href="{% url 'admin:laboratory_reagent_changelist' %}">
+                    <strong>Réactifs</strong>
+                    <span>Couleurs, pH, dangers</span>
+                </a>
+                <a class="adm-shortcut" href="{% url 'admin:laboratory_material_changelist' %}">
+                    <strong>Matériel</strong>
+                    <span>Catalogue du laboratoire</span>
+                </a>
+                <a class="adm-shortcut" href="{% url 'admin:groups_group_changelist' %}">
+                    <strong>Groupes</strong>
+                    <span>Membres, invitations</span>
+                </a>
+                <a class="adm-shortcut" href="{% url 'admin:laboratory_experimentresult_changelist' %}">
+                    <strong>Résultats</strong>
+                    <span>Suivi des manipulations</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

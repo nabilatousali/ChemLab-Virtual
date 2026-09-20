@@ -362,7 +362,7 @@ body.sidebar-collapsed .lab-logout-button {
 .lab-main {
     flex: 1;
     min-width: 0;
-    padding: 30px 42px;
+    padding: 36px 48px;
 }
 
 .lab-header {
@@ -418,7 +418,7 @@ body.sidebar-collapsed .lab-logout-button {
 
 .experiment-catalogue {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 18px;
     padding-top: 28px;
 }
@@ -586,7 +586,7 @@ body.sidebar-collapsed .lab-logout-button {
 
 .material-help {
     margin: 18px 0 0;
-    color: #91a2aa;
+    color: #718792;
     font-size: 11px;
     line-height: 1.5;
 }
@@ -615,7 +615,7 @@ body.sidebar-collapsed .lab-logout-button {
     align-items: center;
     gap: 12px;
     padding: 10px 13px;
-    color: #50636c;
+    color: #718792;
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.9);
     font-size: 10px;
@@ -1134,7 +1134,7 @@ body.sidebar-collapsed .lab-logout-button {
 
 .lab-main {
     width: 100%;
-    max-width: 1240px;
+    max-width: none;
     margin: 0 auto;
 }
 

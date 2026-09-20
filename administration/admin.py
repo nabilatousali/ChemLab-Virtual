@@ -1,12 +1,17 @@
-"""Tableau de bord privé de l'administration ChemLab (/admin/).
+"""Dashboard d'administration dédié (/administration/).
 
-Espace réservé au staff via l'admin Django : aucune entrée vers /admin/
-n'est exposée sur la plateforme publique (ni navbar, ni pages).
+Utilise les informations gérées par Django admin (utilisateurs, expériences,
+résultats, groupes, invitations, messages, paillasse) pour afficher un tableau
+de bord complet : statistiques, activité récente et raccourcis de gestion.
+
+Accès : staff uniquement (même règle que /admin/), sans aucun lien public.
 """
 
 from datetime import timedelta
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 from django.utils import timezone
 
 from experiments.models import Experiment
@@ -15,7 +20,7 @@ from laboratory.models import ExperimentResult, UserBenchReagent
 
 
 def get_dashboard_stats():
-    """Indicateurs plateforme partagés (dashboard /admin/ et espace admin dédié)."""
+    """Indicateurs plateforme de l'espace d'administration."""
     User = get_user_model()
     since_week = timezone.now() - timedelta(days=7)
 
@@ -50,9 +55,11 @@ def get_dashboard_stats():
     }
 
 
-def dashboard_stats(request):
-    """Injecte les indicateurs du dashboard sur l'accueil de l'admin."""
-    if request.path != "/admin/" or not request.user.is_staff:
-        return {}
-
-    return {"admin_dashboard": get_dashboard_stats()}
+@staff_member_required
+def dashboard(request):
+    """Page d'administration : statistiques + activité + gestion."""
+    return render(
+        request,
+        "administration/admin.html",
+        {"admin_dashboard": get_dashboard_stats()},
+    )

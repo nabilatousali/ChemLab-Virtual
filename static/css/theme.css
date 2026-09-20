@@ -134,7 +134,12 @@ textarea {
 .workspace-hint,
 .workbench-placeholder,
 .container-contents {
-    color: var(--cl-muted);
+    color: #24455b;
+}
+
+.workbench-placeholder {
+    font-size: 1.05rem;
+    font-weight: 600;
 }
 
 /* Champs unifiés */
