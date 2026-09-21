@@ -166,7 +166,7 @@ STATICFILES_DIRS = [
 ]
 
 # Dossier de collecte des statiques en production (collectstatic, WhiteNoise).
-STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
