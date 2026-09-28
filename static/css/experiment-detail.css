@@ -39,30 +39,40 @@
 }
 
 .detail-content h1 {
-    font-size: 2rem;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin: 0 0 1rem;
-    color: #102e49;
+    background: linear-gradient(92deg, #0b2f4a 8%, #15999d 55%, #25bdbb 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .detail-content p {
     color: #24455b;
-    line-height: 1.7;
+    font-size: 16.5px;
+    line-height: 1.75;
     margin: 0 0 1.5rem;
 }
 
 .detail-cta {
     display: inline-block;
-    background: #0f8f8c;
+    background: linear-gradient(135deg, #1fc2c0 0%, #15999d 55%, #0e7c86 100%);
     color: #fff;
-    font-weight: 600;
+    font-weight: 800;
     text-decoration: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 10px;
-    transition: background 0.2s ease;
+    padding: 0.9rem 1.7rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(21, 153, 157, 0.32), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .detail-cta:hover {
-    background: #0c6f6c;
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 14px 30px rgba(21, 153, 157, 0.42);
 }
 
 .detail-auth-note {

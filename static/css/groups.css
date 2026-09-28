@@ -27,19 +27,24 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #15999d;
+    background: linear-gradient(135deg, #1fc2c0 0%, #15999d 55%, #0e7c86 100%);
     color: #FFFFFF;
     border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 800;
+    font-size: 0.95rem;
     text-decoration: none;
     margin-bottom: 20px;
     cursor: pointer;
+    box-shadow: 0 10px 24px rgba(21, 153, 157, 0.32), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .groups-create-button:hover {
-    background: #102e49;
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 14px 30px rgba(21, 153, 157, 0.42);
 }
 
 .groups-grid {
@@ -49,17 +54,19 @@
 }
 
 .group-card {
-    background: #FFFFFF;
-    border-radius: 12px;
-    padding: 20px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.87));
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 18px;
+    padding: 22px;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    transition: transform 0.15s ease;
+    box-shadow: 0 18px 44px rgba(16, 46, 73, 0.10);
+    transition: transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .group-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-5px);
+    box-shadow: 0 24px 54px rgba(16, 46, 73, 0.14);
 }
 
 .group-card-icon {
@@ -75,53 +82,93 @@
 }
 
 .group-card h2 {
-    margin: 0 0 6px;
-    font-size: 1.05rem;
-    color: #102e49;
+    margin: 0 0 8px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0b2f4a;
 }
 
 .group-card p {
-    margin: 0 0 10px;
-    font-size: 0.85rem;
-    color: #718792;
+    margin: 0 0 12px;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: #24455b;
 }
 
 .group-card-meta {
-    font-size: 0.78rem;
-    color: #15999d;
-    font-weight: 600;
+    font-size: 0.87rem;
+    color: #0f766e;
+    font-weight: 700;
 }
 
 .group-form {
-    background: #FFFFFF;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 480px;
+    background: #ffffff;
+    border: 1px solid #e2edef;
+    border-radius: 18px;
+    padding: 28px;
+    max-width: 560px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    gap: 8px;
+    box-shadow: 0 14px 34px rgba(16, 46, 73, 0.08);
 }
 
 .group-form label {
-    font-weight: 600;
-    color: #102e49;
-    font-size: 0.85rem;
-    margin-top: 10px;
+    font-weight: 700;
+    color: #0b2f4a;
+    font-size: 13.5px;
+    margin: 12px 0 0;
+}
+
+.group-form label:first-of-type {
+    margin-top: 0;
 }
 
 .group-form input,
 .group-form textarea {
-    padding: 10px 12px;
-    border: 1px solid #e2edef;
-    border-radius: 8px;
-    font-size: 0.95rem;
+    padding: 13px 15px;
+    border: 1.5px solid #d5e3e7;
+    border-radius: 12px;
+    font-size: 15.5px;
     font-family: inherit;
+    color: #0b2f4a;
+    background: #fbfdff;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.group-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.group-form input::placeholder,
+.group-form textarea::placeholder {
+    color: #8aa0ab;
+}
+
+.group-form input:hover,
+.group-form textarea:hover {
+    border-color: #b9d2d8;
+    background: #ffffff;
+}
+
+.group-form input:focus,
+.group-form textarea:focus {
+    border-color: #15999d;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(21, 153, 157, 0.14);
 }
 
 .group-form button {
-    margin-top: 16px;
-    align-self: flex-start;
+    margin-top: 20px;
+    align-self: stretch;
+    height: 52px;
+    font-size: 15.5px;
 }
 
 .group-detail-grid {
@@ -197,38 +244,58 @@
 
 .group-inline-form {
     display: flex;
-    gap: 8px;
+    gap: 0;
+    margin-top: 12px;
+    border: 1.5px solid #d5e3e7;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fbfdff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.group-inline-form:focus-within {
+    border-color: #15999d;
+    box-shadow: 0 0 0 4px rgba(21, 153, 157, 0.14);
+    background: #ffffff;
 }
 
 .group-inline-form input,
 .group-inline-form select {
     flex: 1;
-    padding: 9px 12px;
-    border: 1px solid #e2edef;
-    border-radius: 8px;
-    font-size: 0.88rem;
+    min-width: 0;
+    padding: 13px 15px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
     font-family: inherit;
+    color: #0b2f4a;
 }
 
 .group-inline-form button {
-    background: #15999d;
+    background: #0f766e;
     color: #FFFFFF;
     border: none;
-    border-radius: 8px;
-    width: 40px;
+    border-left: 1px solid #e2edef;
+    padding: 0 18px;
+    min-height: 50px;
+    min-width: 52px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
+    transition: background 0.15s ease;
 }
 
 .group-inline-form button:hover {
-    background: #102e49;
+    background: #0b5f59;
 }
 
 .group-hint {
-    font-size: 0.75rem;
-    color: #93a5ae;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #24455b;
     margin: 8px 0 0;
 }
 
@@ -243,70 +310,91 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 14px;
-    padding-right: 4px;
+    margin-bottom: 16px;
+    padding: 14px;
+    background: #f6f9fc;
+    border: 1px solid #e2edef;
+    border-radius: 12px;
 }
 
 .group-chat-message {
-    background: #f6f9fc;
-    border-radius: 10px;
-    padding: 8px 12px;
-    max-width: 70%;
+    background: #ffffff;
+    border: 1px solid #e2edef;
+    border-radius: 12px;
+    padding: 10px 14px;
+    max-width: 75%;
     align-self: flex-start;
 }
 
 .group-chat-message.mine {
     background: #e6f6f5;
+    border-color: #bde7e5;
     align-self: flex-end;
 }
 
 .group-chat-sender {
-    font-size: 0.75rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    color: #15999d;
+    color: #0f766e;
 }
 
 .group-chat-message p {
-    margin: 2px 0;
-    font-size: 0.9rem;
-    color: #102e49;
+    margin: 4px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #0b2f4a;
 }
 
 .group-chat-time {
-    font-size: 0.68rem;
-    color: #93a5ae;
+    font-size: 0.76rem;
+    color: #6b8794;
 }
 
 .group-chat-form {
     display: flex;
-    gap: 8px;
+    gap: 0;
+    border: 1.5px solid #d5e3e7;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #ffffff;
+    padding: 4px 4px 4px 6px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.group-chat-form:focus-within {
+    border-color: #15999d;
+    box-shadow: 0 0 0 4px rgba(21, 153, 157, 0.14);
 }
 
 .group-chat-form input {
     flex: 1;
-    padding: 10px 14px;
-    border: 1px solid #e2edef;
-    border-radius: 999px;
-    font-size: 0.9rem;
+    min-width: 0;
+    padding: 12px 16px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
     font-family: inherit;
+    color: #0b2f4a;
 }
 
 .group-chat-form button {
-    background: #15999d;
+    background: #0f766e;
     color: #FFFFFF;
     border: none;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
+    border-radius: 999px;
+    width: 46px;
+    height: 46px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: background 0.15s ease;
 }
 
 .group-chat-form button:hover {
-    background: #102e49;
+    background: #0b5f59;
 }
 
 /* ---------- Notifications (invitations reçues) ---------- */

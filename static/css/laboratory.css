@@ -7,7 +7,13 @@
     min-height: 100vh;
     padding-left: 0;
     color: #102e49;
-    background: #f6f9fc;
+    background:
+        radial-gradient(950px 420px at 8% -8%, rgba(101, 222, 213, 0.28), transparent 62%),
+        radial-gradient(850px 400px at 98% 6%, rgba(255, 196, 120, 0.22), transparent 60%),
+        radial-gradient(900px 620px at 50% 115%, rgba(50, 132, 202, 0.14), transparent 62%),
+        radial-gradient(600px 300px at 78% 42%, rgba(37, 189, 187, 0.10), transparent 65%),
+        linear-gradient(180deg, #fdfeff 0%, #f2f8fb 34%, #ecf7f5 66%, #f6f9fc 100%);
+    background-attachment: fixed;
     transition: padding-left .32s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -363,6 +369,22 @@ body.sidebar-collapsed .lab-logout-button {
     flex: 1;
     min-width: 0;
     padding: 36px 48px;
+    position: relative;
+    isolation: isolate;
+}
+
+.lab-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(21, 153, 157, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(21, 153, 157, 0.06) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(720px 360px at 22% 0%, black 0%, transparent 72%);
+    -webkit-mask-image: radial-gradient(720px 360px at 22% 0%, black 0%, transparent 72%);
 }
 
 .lab-header {
@@ -382,9 +404,14 @@ body.sidebar-collapsed .lab-logout-button {
 
 .lab-header h1 {
     margin: 0;
-    color: #102e49;
     font-size: clamp(32px, 4vw, 52px);
     letter-spacing: -2px;
+    background: linear-gradient(92deg, #0b2f4a 10%, #15999d 48%, #25bdbb 62%, #e8a04c 105%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px rgba(21, 153, 157, 0.12));
 }
 
 .lab-header-description {
@@ -596,13 +623,13 @@ body.sidebar-collapsed .lab-logout-button {
     min-height: 510px;
     overflow: hidden;
     border-radius: 18px;
-
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 18px 44px rgba(16, 46, 73, 0.10), inset 0 1px 0 rgba(255,255,255,0.9);
     background:
-        linear-gradient(
-            rgba(7, 27, 46, 0.16),
-            rgba(7, 27, 46, 0.16)
-        ),
-        url("../images/chemlab-lab-background.jpg")
+        radial-gradient(560px 220px at 18% 0%, rgba(255,255,255,0.95), transparent 65%),
+        radial-gradient(520px 260px at 92% 18%, rgba(101,222,213,0.22), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.55) 45%, rgba(16,46,73,0.08) 100%),
+        url("../images/photo.jpg")
         center / cover no-repeat;
 }
 

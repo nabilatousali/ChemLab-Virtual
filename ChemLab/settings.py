@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'experiments',
     'laboratory',
     'groups',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

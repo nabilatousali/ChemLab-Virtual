@@ -10,7 +10,9 @@ body {
     margin: 0;
     color: #102e49;
     background: #f6f9fc;
-    font-family: Arial, sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
 }
 
 .container {
@@ -84,10 +86,10 @@ body {
 }
 
 .eyebrow {
-    color: #65ded5;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    color: #0f766e;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
     text-transform: uppercase;
 }
 
@@ -102,10 +104,10 @@ body {
 }
 
 .hero-description {
-    max-width: 460px;
-    color: #abc2ca;
-    font-size: 17px;
-    line-height: 1.7;
+    max-width: 480px;
+    color: #c8dde2;
+    font-size: 19px;
+    line-height: 1.75;
 }
 
 .hero-actions {
@@ -263,12 +265,15 @@ body {
 
 .experiment-card h3 {
     margin: 15px 0 10px;
-    color: #102e49;
-    font-size: 23px;
+    color: #0b2f4a;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 .experiment-card p {
-    color: #718792;
+    color: #24455b;
+    font-size: 15.5px;
     line-height: 1.7;
 }
 
@@ -303,14 +308,15 @@ body {
 
 .step-card h3 {
     margin: 25px 0 10px;
-    color: #102e49;
-    font-size: 20px;
+    color: #0b2f4a;
+    font-size: 21px;
+    font-weight: 800;
 }
 
 .step-card p {
     margin: 0;
-    color: #718792;
-    font-size: 14px;
+    color: #24455b;
+    font-size: 15.5px;
     line-height: 1.7;
 }
 

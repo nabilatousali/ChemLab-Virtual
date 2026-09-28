@@ -85,12 +85,22 @@ textarea {
 }
 
 /* Fonds de page unifiés */
-.lab-layout,
 .catalogue-page,
 .catalogue-section,
 .auth-page,
 .auth-panel {
     background: var(--cl-bg);
+}
+
+/* Fond laboratoire : effet waouh clair (ne pas écraser le dégradé) */
+.lab-layout {
+    background:
+        radial-gradient(950px 420px at 8% -8%, rgba(101, 222, 213, 0.28), transparent 62%),
+        radial-gradient(850px 400px at 98% 6%, rgba(255, 196, 120, 0.22), transparent 60%),
+        radial-gradient(900px 620px at 50% 115%, rgba(50, 132, 202, 0.14), transparent 62%),
+        radial-gradient(600px 300px at 78% 42%, rgba(37, 189, 187, 0.10), transparent 65%),
+        linear-gradient(180deg, #fdfeff 0%, #f2f8fb 34%, #ecf7f5 66%, #f6f9fc 100%);
+    background-attachment: fixed;
 }
 
 /* Cartes et panneaux unifiés */
@@ -524,4 +534,265 @@ h2 {
     .auth-input {
         height: 56px;
     }
+}
+
+/* =========================================================
+   HARMONISATION PREMIUM — tous les onglets (waouh clair)
+   Uniquement visuel : dégradés, glass, boutons, typographies.
+   ========================================================= */
+
+/* ---- Fonds clairs waouh sur toutes les pages ---- */
+.catalogue-page,
+.catalogue-section,
+.auth-panel,
+.group-detail-grid,
+.detail-page {
+    background:
+        radial-gradient(900px 380px at 6% -6%, rgba(101, 222, 213, 0.16), transparent 62%),
+        radial-gradient(800px 360px at 98% 4%, rgba(255, 196, 120, 0.14), transparent 60%),
+        linear-gradient(180deg, #fdfeff 0%, #f2f8fb 45%, #eefaf8 100%);
+    background-attachment: fixed;
+}
+
+/* ---- Titres principaux en dégradé ---- */
+.lab-header h1,
+.workspace-title-row h1,
+.detail-content h1,
+.auth-form-wrapper h2,
+.catalogue-hero h1,
+.profile-name {
+    background: linear-gradient(92deg, #0b2f4a 8%, #15999d 52%, #25bdbb 72%, #e8a04c 108%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent;
+}
+
+.bench-panel h2,
+.group-panel h2,
+.profile-card h2,
+.notifications-panel h2,
+.history-panel h2,
+.experiment-body h2,
+.group-card h2,
+.step-card h3,
+.experiment-card h2 {
+    letter-spacing: -0.02em;
+    font-weight: 800 !important;
+}
+
+.group-card h2,
+.experiment-body h2,
+.profile-card h2 {
+    font-size: 1.3rem !important;
+    color: #0b2f4a !important;
+}
+
+/* ---- Pastilles / eyebrows / metas : plus grands + stylés ---- */
+.eyebrow,
+.auth-eyebrow,
+.auth-kicker {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2.2px !important;
+}
+
+.lab-breadcrumb {
+    font-size: 14.5px !important;
+    font-weight: 600 !important;
+}
+
+.experiment-meta {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+}
+
+.experiment-status {
+    font-size: 12.5px !important;
+}
+
+.experiment-duration,
+.experiment-card-footer,
+.experiment-level {
+    font-size: 13.5px !important;
+    font-weight: 600;
+}
+
+.group-card-meta,
+.group-shared-meta {
+    font-size: 0.87rem !important;
+    font-weight: 600;
+}
+
+.group-hint,
+.dropdown-empty,
+.workspace-hint {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+}
+
+.group-chat-sender {
+    font-size: 0.82rem !important;
+}
+
+.group-chat-time {
+    font-size: 0.76rem !important;
+}
+
+/* ---- Textes courants agrandis + lisibles ---- */
+.experiment-body p,
+.group-card p,
+.step-card p,
+.card-link,
+.experiment-link,
+.notification-text {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+}
+
+.card-link,
+.experiment-link,
+.history-retry,
+.detail-back {
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+}
+
+.history-cell strong {
+    font-size: 17px !important;
+    line-height: 1.4 !important;
+}
+
+.history-cell span {
+    font-size: 13.5px !important;
+}
+
+.history-score {
+    font-size: 13px !important;
+    padding: 7px 15px !important;
+}
+
+.history-empty {
+    font-size: 15.5px !important;
+}
+
+.profile-meta span,
+.profile-meta strong,
+.group-member-list li,
+.group-shared-list li {
+    font-size: 14.5px !important;
+}
+
+.stat-card p {
+    font-size: 14.5px !important;
+}
+
+.stat-card strong {
+    font-size: 32px !important;
+}
+
+.auth-intro {
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+    color: #24455b !important;
+}
+
+.form-field label,
+.field-header label,
+.group-form label {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #0b2f4a !important;
+}
+
+.auth-input,
+.group-form input,
+.group-form textarea,
+.group-inline-form input,
+.group-inline-form select,
+.group-chat-form input,
+.bench-search-form input[type="text"] {
+    font-size: 16px !important;
+}
+
+.auth-submit,
+.checkbox-field,
+.auth-switch {
+    font-size: 15px !important;
+}
+
+.detail-content p,
+.group-chat-message p {
+    font-size: 16.5px !important;
+    line-height: 1.75 !important;
+}
+
+.detail-content .experiment-meta span {
+    font-size: 0.85rem !important;
+    padding: 0.45rem 0.95rem !important;
+}
+
+/* ---- Cartes glass premium sur tous les onglets ---- */
+.experiment-card,
+.group-card,
+.group-panel,
+.group-form,
+.notifications-panel,
+.history-panel,
+.detail-card,
+.profile-card,
+.stat-card,
+.step-card,
+.empty-state {
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.87)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 18px 44px rgba(16, 46, 73, 0.10) !important;
+    position: relative;
+}
+
+.experiment-card,
+.group-card,
+.stat-card,
+.step-card {
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.25s ease !important;
+}
+
+.experiment-card:hover,
+.group-card:hover,
+.stat-card:hover,
+.step-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 24px 54px rgba(16, 46, 73, 0.14) !important;
+}
+
+/* ---- Boutons sobres et professionnels (statiques) ---- */
+.button-primary,
+.groups-create-button,
+.detail-cta,
+.auth-submit,
+.group-inline-form button,
+.group-chat-form button,
+.notif-btn.accept,
+.nav-signup {
+    background: #0f766e !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.24) !important;
+}
+
+.button-primary:hover,
+.groups-create-button:hover,
+.detail-cta:hover,
+.auth-submit:hover,
+.group-inline-form button:hover,
+.group-chat-form button:hover,
+.notif-btn.accept:hover {
+    background: #0b5f59 !important;
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.30) !important;
 }
