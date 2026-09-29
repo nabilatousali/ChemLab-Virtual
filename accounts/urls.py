@@ -19,11 +19,7 @@ urlpatterns = [
         name="register",
     ),
 
-    path(
-        "activer/<uidb64>/<token>/",
-        views.activate_view,
-        name="activate",
-    ),
+    
 
     path(
         "logout/",

@@ -97,8 +97,7 @@ class RegisterForm(forms.ModelForm):
         user = super().save(commit=False)
 
         user.email = user.email.lower()
-        # Le compte reste inactif jusqu'au clic sur le lien d'activation.
-        user.is_active = False
+        user.is_active = True  # compte actif dès l'inscription
         user.set_password(self.cleaned_data["password"])
 
         if commit:
@@ -163,11 +162,6 @@ class LoginForm(forms.Form):
             )
 
             if self.user is None:
-                if not user_by_email.is_active:
-                    raise forms.ValidationError(
-                        "Ce compte n'est pas encore activé. "
-                        "Vérifiez votre boîte e-mail."
-                    )
                 raise forms.ValidationError(
                     "Adresse e-mail ou mot de passe incorrect."
                 )
