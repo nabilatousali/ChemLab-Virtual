@@ -22,7 +22,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+DJANGO_INSECURE = 'django-insecure-^7mld%+(a+a+&_*us3wklr#la=ld2h$7n4@ggf#p$07g1azg8l'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -41,9 +41,7 @@ ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 # Origines de confiance pour les POST (obligatoire en prod HTTPS,
 # sinon tous les formulaires sont rejetés en 403 CSRF).
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
-    if origin.strip()
+    "https://chem-lab-virtual-inky.vercel.app"
 ]
 
 

@@ -16,7 +16,7 @@
 
 .detail-image img {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16/ 10;
     max-height: 420px;
     object-fit: cover;
     border-radius: 12px;
